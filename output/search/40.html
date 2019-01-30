@@ -1,0 +1,3387 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="robots" content="noindex,nofollow">
+<title>eLIBRARY.RU - Московский государственный лингвистический университет - Список публикаций организации</title>
+
+<script type="text/javascript" src="/jquery.min.js"></script>
+<script type="text/javascript" src="/jquery.tools.min.js"></script>
+<script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<script type="text/javascript" src="/fancybox/jquery.easydrag.js"></script>
+<script type="text/javascript" src="/elibrary.js"></script>
+<script type="text/javascript" src="/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/style_sm.css" type="text/css" media="screen">
+
+<SCRIPT LANGUAGE="JavaScript">
+
+but_blue_hover=new Image();
+but_blue_hover.src="/images/but_blue_hover.png";
+but_red_hover=new Image();
+but_red_hover.src="/images/but_red_hover.png";
+but_gray_hover=new Image();
+but_gray_hover.src="/images/but_gray_hover.png";
+
+w_down=new Image();
+w_down.src="/pic/w_show.gif";
+w_up=new Image();
+w_up.src="/pic/w_hide.gif";
+ws_down=new Image();
+ws_down.src="/images/or_er2_down.gif";
+ws_up=new Image();
+ws_up.src="/images/or_close2.gif";
+
+var selRow;
+var row_color;
+function onRowClick(row){
+  if(row != selRow){
+     if (selRow != null){
+        selRow.bgColor = row_color;
+     }
+  selRow = row;
+  row_color = row.bgColor;
+  selRow.bgColor="#e8e8e8";
+  }
+}
+function hideShow(elem,parent) {
+  var child =  document.getElementById(elem);
+  child.className = child.className == "collapsed" ? "expanded" : "collapsed";
+  if (parent.className == "win_expandable") parent.src = child.className == "collapsed" ? w_down.src : w_up.src;
+}
+function hideShowSel(elem) {
+  var child =  document.getElementById(elem);
+  child.className = child.className == "collapsed" ? "expanded" : "collapsed";
+  var imgparent =  document.getElementById('img_'+elem);
+  if (imgparent.className == "win_expandable") imgparent.src = child.className == "collapsed" ? ws_down.src : ws_up.src;
+  var txtparent =  document.getElementById('txt_'+elem);
+  if (txtparent.className == "win_expandable") txtparent.innerHTML = child.className == "collapsed" ? "Раскрыть" : "Скрыть";
+}
+function hideShowSel1(elem) {
+  var child =  document.getElementById(elem);
+  $('#'+elem).slideToggle(500, function(){didScroll = true;})
+  child.className = child.className == "collapsed1" ? "expanded1" : "collapsed1";
+  if (child.className == "collapsed1") {
+    $('#'+elem).slideUp(500, function(){didScroll = true;})}
+  else {
+    $('#'+elem).slideDown(500, function(){didScroll = true;})}
+  var txtparent =  document.getElementById('txt_'+elem);
+  if (txtparent.className == "win_expandable") txtparent.innerHTML = child.className == "collapsed1" ? "▼" : "▲";
+}
+function RowSelect(row,sel){
+  var rbgc = sel==1 ? "#e8e8e8" : "#f5f5f5";
+  $('#'+row+' td').attr('bgColor', rbgc);
+}
+function select_all(){
+  $('input:checkbox[name^="tid"]').attr('checked', true);
+  $('input:checkbox[name^="pid"]').attr('checked', true);
+  $('tr[id^="arw"] td').attr('bgColor', "#e8e8e8");
+  $('tr[id^="brw"] td').attr('bgColor', "#e8e8e8");
+}
+function deselect_all(){
+  $('input:checkbox[name^="tid"]').attr('checked', false);
+  $('input:checkbox[name^="pid"]').attr('checked', false);
+  $('tr[id^="arw"] td').attr('bgColor', "#f5f5f5");
+  $('tr[id^="brw"] td').attr('bgColor', "#f5f5f5");
+}
+function select_options(sname){
+  $('input:checkbox[name^="'+sname+'s_"]').attr('checked', true);
+  $('tr[name^="'+sname+'_"]').attr('bgColor', "#dddddd");
+  checked_count(sname);
+  isnew=1;
+  }
+function deselect_options(sname){
+  $('input:checkbox[name^="'+sname+'s_"]').attr('checked', false);
+  $('tr[name^="'+sname+'_"]').attr('bgColor', "#f5f5f5");
+  checked_count(sname);
+  isnew=1;
+}
+function wait_load_options(sname){
+  $('span[name="'+sname+'sheader"]').text('загружается...');
+}
+function checked_count(sname){
+  var nb=$('input:checkbox[name^="'+sname+'s_"]:checked').length;
+  if (nb>0){$('span[name="'+sname+'sheader"]').html('(выделено: ' + nb + ')')}
+  else{$('span[name="'+sname+'sheader"]').text('')}
+}
+var ir=0;
+function resizelist(sname, offset) {
+ if (ir <= offset+10) {
+  ir=ir+1;
+  $('div[id="'+sname+'_options"]').height(ir+50);
+  window.setTimeout('resizelist("'+sname+'", '+offset+')', 1);
+ }
+}
+var rubricloaded=0;
+var titleloaded=0;
+var orgloaded=0;
+var authorloaded=0;
+var yearloaded=0;
+var typeloaded=0;
+var roleloaded=0;
+var isnew=0;
+
+$(document).ready(function() { 
+
+
+
+$('#rubric_order').change(function() { 
+var selids="";
+$('input:checkbox[id^="rubrics_"]:checked').each(function(){
+  selids += $(this).attr('name').substring(8) + "|"});
+$('#rubrics_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$('#rubrics_options').load("org_items_rubrics.asp?id=2179&orgdepid=0&order=" + $('#rubric_order').val() + "&selids=" + selids + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random());
+rubricloaded=1;
+})
+$('*[id$="_rubrics"]').click(function() { 
+hideShowSel1('rubrics');
+if (rubricloaded==0){
+$('#rubrics_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$.get("org_items_rubrics.asp?id=2179&orgdepid=0&order=" + $('#rubric_order').val() + "&selids=" + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random(), function(data) {
+  $('#rubrics_options').html(data);
+  if ($('#rubrics_table').height()<=200){$('#rubrics_options').height($('#rubrics_table').height()+10)}
+  else {$('#rubrics_options').height(200)};
+  rubricloaded=1;
+  })
+}
+else {
+  if ($('#rubrics_table').height()<=200){$('#rubrics_options').height($('#rubrics_table').height()+10)}
+  else {$('#rubrics_options').height(200)};
+}
+})
+
+
+$('#title_order').change(function() { 
+var selids="";
+$('input:checkbox[id^="titles_"]:checked').each(function(){
+  selids += $(this).attr('name').substring(7) + "|"});
+$('#titles_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$('#titles_options').load("org_items_titles.asp?id=2179&orgdepid=0&order=" + $('#title_order').val() + "&selids=" + selids + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random());
+titleloaded=1;
+})
+$('*[id$="_titles"]').click(function() { 
+hideShowSel1('titles');
+if (titleloaded==0){
+$('#titles_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$.get("org_items_titles.asp?id=2179&orgdepid=0&order=" + $('#title_order').val() + "&selids=" + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random(), function(data) {
+  $('#titles_options').html(data);
+  if ($('#titles_table').height()<=200){$('#titles_options').height($('#titles_table').height()+10)}
+  else {$('#titles_options').height(200)};
+  titleloaded=1;
+  })
+}
+else {
+  if ($('#titles_table').height()<=200){$('#titles_options').height($('#titles_table').height()+10)}
+  else {$('#titles_options').height(200)};
+}
+})
+
+
+$('#org_order').change(function() { 
+var selids="";
+$('input:checkbox[id^="orgs_"]:checked').each(function(){
+  selids += $(this).attr('name').substring(5) + "|"});
+$('#orgs_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$('#orgs_options').load("org_items_orgs.asp?id=2179&orgdepid=0&order=" + $('#org_order').val() + "&selids=" + selids + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random());
+orgloaded=1;
+})
+$('*[id$="_orgs"]').click(function() { 
+hideShowSel1('orgs');
+if (orgloaded==0){
+$('#orgs_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$.get("org_items_orgs.asp?id=2179&orgdepid=0&order=" + $('#org_order').val() + "&selids=" + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random(), function(data) {
+  $('#orgs_options').html(data);
+  if ($('#orgs_table').height()<=200){$('#orgs_options').height($('#orgs_table').height()+10)}
+  else {$('#orgs_options').height(200)};
+  orgloaded=1;
+  })
+}
+else {
+  if ($('#orgs_table').height()<=200){$('#orgs_options').height($('#orgs_table').height()+10)}
+  else {$('#orgs_options').height(200)};
+}
+})
+
+
+$('#author_order').change(function() { 
+var selids="";
+$('input:checkbox[id^="authors_"]:checked').each(function(){
+  selids += $(this).attr('name').substring(8) + "|"});
+selids = encodeURIComponent(selids);
+$('#authors_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$('#authors_options').load("org_items_authors.asp?id=2179&orgdepid=0&order=" + $('#author_order').val() + "&selids=" + selids + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random());
+authorloaded=1;
+})
+$('*[id$="_authors"]').click(function() { 
+hideShowSel1('authors');
+if (authorloaded==0){
+$('#authors_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$.get("org_items_authors.asp?id=2179&orgdepid=0&order=" + $('#author_order').val() + "&selids=" + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random(), function(data) {
+  $('#authors_options').html(data);
+  if ($('#authors_table').height()<=200){$('#authors_options').height($('#authors_table').height()+10)}
+  else {$('#authors_options').height(200)};
+  authorloaded=1;
+  })
+}
+else {
+  if ($('#authors_table').height()<=200){$('#authors_options').height($('#authors_table').height()+10)}
+  else {$('#authors_options').height(200)};
+}
+})
+
+
+$('#year_order').change(function() { 
+var selids="";
+$('input:checkbox[id^="years_"]:checked').each(function(){
+  selids += $(this).attr('name').substring(6) + "|"});
+$('#years_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$('#years_options').load("org_items_years.asp?id=2179&orgdepid=0&order=" + $('#year_order').val() + "&selids=" + selids + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random());
+yearloaded=1;
+})
+$('*[id$="_years"]').click(function() { 
+hideShowSel1('years');
+if (yearloaded==0){
+$('#years_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$.get("org_items_years.asp?id=2179&orgdepid=0&order=" + $('#year_order').val() + "&selids=" + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random(), function(data) {
+  $('#years_options').html(data);
+  if ($('#years_table').height()<=200){$('#years_options').height($('#years_table').height()+10)}
+  else {$('#years_options').height(200)};
+  yearloaded=1;
+  })
+}
+else {
+  if ($('#years_table').height()<=200){$('#years_options').height($('#years_table').height()+10)}
+  else {$('#years_options').height(200)};
+}
+})
+
+
+$('#type_order').change(function() { 
+var selids="";
+$('input:checkbox[id^="types_"]:checked').each(function(){
+  selids += $(this).attr('name').substring(6) + "|"});
+$('#types_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$('#types_options').load("org_items_types.asp?id=2179&orgdepid=0&order=" + $('#type_order').val() + "&selids=" + selids + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random());
+typeloaded=1;
+})
+$('*[id$="_types"]').click(function() { 
+hideShowSel1('types');
+if (typeloaded==0){
+$('#types_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$.get("org_items_types.asp?id=2179&orgdepid=0&order=" + $('#type_order').val() + "&selids=" + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random(), function(data) {
+  $('#types_options').html(data);
+  if ($('#types_table').height()<=200){$('#types_options').height($('#types_table').height()+10)}
+  else {$('#types_options').height(200)};
+  typeloaded=1;
+  })
+}
+else {
+  if ($('#types_table').height()<=200){$('#types_options').height($('#types_table').height()+10)}
+  else {$('#types_options').height(200)};
+}
+})
+
+
+$('#role_order').change(function() { 
+var selids="";
+$('input:checkbox[id^="roles_"]:checked').each(function(){
+  selids += $(this).attr('name').substring(6) + "|"});
+$('#roles_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$('#roles_options').load("org_items_roles.asp?id=2179&orgdepid=0&order=" + $('#role_order').val() + "&selids=" + selids + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random());
+roleloaded=1;
+})
+$('*[id$="_roles"]').click(function() { 
+hideShowSel1('roles');
+if (roleloaded==0){
+$('#roles_options').html("<br>&nbsp;&nbsp;&nbsp;Загружается...");
+$.get("org_items_roles.asp?id=2179&orgdepid=0&order=" + $('#role_order').val() + "&selids=" + "&show_sotr=0&show_refs=1&show_option=0&hide_doubles=1&rand=" + Math.random(), function(data) {
+  $('#roles_options').html(data);
+  if ($('#roles_table').height()<=200){$('#roles_options').height($('#roles_table').height()+10)}
+  else {$('#roles_options').height(200)};
+  roleloaded=1;
+  })
+}
+else {
+  if ($('#roles_table').height()<=200){$('#roles_options').height($('#roles_table').height()+10)}
+  else {$('#roles_options').height(200)};
+}
+})
+
+
+})
+
+function reset_form(){
+  var frm = document.forms["results"];
+  deselect_options("rubric"); 
+  deselect_options("title"); 
+  deselect_options("org"); 
+  deselect_options("author"); 
+  deselect_options("year"); 
+  deselect_options("type"); 
+  deselect_options("role"); 
+}
+function pub_search(){
+  var frm = document.forms["results"];
+    frm.pagenum.value=1;
+    frm.action="org_items.asp";
+    frm.target="";
+    frm.submit()
+}
+function itembox_add(){
+  var frm = document.forms["results"];
+  var issel=0;
+  frm.items_all.value="";
+  for (var i = 0; i < frm.elements.length; i++) {
+    if (frm.elements[i].name.substring(0,3)=="tid"){
+       if (frm.elements[i].checked) {
+	     issel=issel+1;
+	     frm.items_all.value = frm.items_all.value + frm.elements[i].name.substring(3, frm.elements[i].name.length) + "|";
+	   }
+    }
+ }
+ if (issel==0) {
+    alerts ("Не выделено ни одной публикации")}
+ else {
+    $.fancybox({
+      href : 'itembox_item_add2.asp?itemboxid='+frm.itemboxid.value+'&items_all='+frm.items_all.value ,
+      title : '',
+	  padding : 20,     
+	  width : 480,
+	  height : 150,
+	  overlayOpacity : 0.3,	
+	  overlayColor : '#000',
+	  speedIn : 500,
+	  hideOnOverlayClick : false,
+	  enableEscapeButton : true,
+	  type : 'iframe'
+    });
+  }
+}
+
+function itembox_new(aid,anam){
+  var frm = document.forms["results"];
+  var el = document.createElement("OPTION");
+  el.text=anam;
+  el.value=aid;
+  frm.itemboxid.options[frm.itemboxid.options.length]=el;
+  frm.itemboxid[frm.itemboxid.length-1].selected=true;
+}
+function itembox_add_all(){
+  var frm = document.forms["results"];
+    $.fancybox({
+      href : 'itembox_item_add2.asp?itemboxid='+frm.itemboxid.value+'&add_all=2' ,
+      title : '',
+	  padding : 20,     
+	  width : 480,
+	  height : 150,
+	  overlayOpacity : 0.3,	
+	  overlayColor : '#000',
+	  speedIn : 500,
+	  hideOnOverlayClick : false,
+	  enableEscapeButton : true,
+	  type : 'iframe'
+    });
+}
+function newquery(){
+  document.forms["results"].action="querybox.asp";
+  document.forms["results"].target="";
+  document.forms["results"].submit()
+}
+function show_help(topic){
+  anewwin=window.open("", "addwin", "resizable=yes,scrollbars=yes,height=300,width=500,top=0,left=0");
+  document.forms["results"].action=topic;
+  document.forms["results"].target="addwin";
+  document.forms["results"].submit()
+}
+function load_article(id){
+
+  alerts("Для доступа к полному тексту необходимо вначале войти в библиотеку!");
+  document.getElementById("win_login").className = "expanded";
+  document.getElementById("img_login").src = w_up.src;
+  document.forms["login"].login.focus();
+
+}
+function html_article(id){
+
+  alerts("Для доступа к полному тексту необходимо вначале войти в библиотеку!");
+  document.getElementById("win_login").className = "expanded";
+  document.getElementById("img_login").src = w_up.src;
+  document.forms["login"].login.focus();
+
+}
+function order_item(id, pr){
+
+  alerts("Для заказа полного текста публикации необходимо вначале войти в библиотеку!");
+  document.getElementById("win_login").className = "expanded";
+  document.getElementById("img_login").src = w_up.src;
+  document.forms["login"].login.focus();
+
+}
+function goto_page(pnum){
+  var frm = document.forms["results"];
+  frm.pagenum.value=pnum;
+  frm.action="org_items.asp";
+  frm.target="";
+  frm.submit()
+}
+
+
+
+</SCRIPT>
+</head>
+
+<body onLoad='document.all.loading.style.display="none"; document.all.thepage.style.display=""'>
+
+<div id="loading" style="position:absolute; width:100%; text-align:center; top:300px;">
+Пожалуйста, подождите, <br>пока Ваш запрос будет обработан
+<br><img src="/pic/query_wait.gif" border=0 width=31 height=31 vspace=5></div>
+
+<div id="thepage" style="display: none">
+<table width=100% cellpadding=0 cellspacing=0 border=0>
+<tr><td width=100% align=center valign=top>
+
+
+<table  cellpadding=0 cellspacing=0 border=0>
+<tr><td width=170 align=left valign=top id="leftcol">
+
+<table border=0 cellspacing=0 cellpadding=0 width=150>
+
+<tr><td><a href="/defaultx.asp"><img src="/images/welcome1.jpg" width=150 title="НАУЧНАЯ ЭЛЕКТРОННАЯ БИБЛИОТЕКА eLIBRARY.RU" border=0 vspace=15></a></td></tr>
+
+
+<tr><td><a href="/defaultx.asp"><img id="elibrary_logo" src="/images/elibrary_logo2.svg" width=150 height=39 border=0 vspace=10 title="eLIBRARY.RU - НАУЧНАЯ ЭЛЕКТРОННАЯ БИБЛИОТЕКА"></a></td></tr>
+<script language="JavaScript">
+if (supportsSVG) {
+  document.getElementById("elibrary_logo").src="/images/elibrary_logo2.svg";}
+else {
+  document.getElementById("elibrary_logo").src="/images/elibrary_logo.gif";}
+</script>
+<tr><td><img src="/pic/1pix.gif" vspace=7></td></tr>
+
+<tr><td width=100% align=center valign=top>
+
+<div class="left-panel">
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr><td width=100% align=center valign=top><font color=#F26C4F><b><span class="expandable" onClick="$('#win_basket').slideToggle(500, function(){didScroll = true;})" title="Состояние корзины в электронном магазине eLIBRARY.ru">КОРЗИНА</span></b></font>
+</td></tr>
+</table>
+
+<div ID="win_basket" class="collapsed">
+<div style="height: 10px;"></div>
+
+<table border=0 cellspacing=0 cellpadding=2 width=140>
+
+<tr><td width=100% align=center valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Всего в корзине:&nbsp;</font><font color=#00008f><b><span id="basket_num">0</span></b>&nbsp;публ.</font></td></tr>
+<tr><td width=100% align=center valign=top>
+&nbsp;<font color=#000000>на сумму:&nbsp;</font><font color=#00008f><b><span id="basket_sum">0</span></b>&nbsp;руб.</font></td></tr>
+</td></tr>
+
+</table>
+
+<div style="height: 10px;"></div>
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr class="menub"><td align=center width=30 valign=bottom><a href="/basket.asp"><img src="images/basket.png" width=15 height=15 border=0></a></td><td align=left width=110 valign=top><a href="/basket.asp">Содержание корзины</a></td></tr>
+</table>
+
+</div>
+</div>
+</td></tr>
+
+<tr><td><img src="/pic/1pix.gif" vspace=9></td></tr>
+<SCRIPT LANGUAGE="JavaScript">
+function check_search(){
+if (document.forms["search"].ftext.value.length > 1) {
+  var frm = document.forms["search"];
+  frm.action="/query_results.asp";
+  frm.target="";
+  frm.submit();
+  }
+else {
+  alert("Введите не менее двух символов");
+  }
+}
+function search_enter(event){ 
+  var keycode; 
+  event = event || window.event; 
+  keycode = event.keyCode || event.which;
+  if(keycode==13){
+    check_search();
+	return false;
+  }
+} 
+</SCRIPT>
+<FORM method=post name="search" onSubmit="return false">
+<input type="hidden" name="where_fulltext" value="on">
+<input type="hidden" name="where_name" value="on">
+<input type="hidden" name="where_abstract" value="on">
+<input type="hidden" name="where_keywords" value="on">
+<input type="hidden" name="where_affiliation" value="on">
+<input type="hidden" name="where_references" value="on">
+<input type="hidden" name="type_article" value="on">
+<input type="hidden" name="type_disser" value="on">
+<input type="hidden" name="type_book" value="on">
+<input type="hidden" name="type_report" value="on">
+<input type="hidden" name="type_conf" value="on">
+<input type="hidden" name="type_patent" value="on">
+<input type="hidden" name="type_preprint" value="on">
+<input type="hidden" name="search_freetext" value="">
+<input type="hidden" name="search_morph" value="on">
+<input type="hidden" name="search_fulltext" value="">
+<input type="hidden" name="search_open" value="">
+<input type="hidden" name="search_results" value="">
+<input type="hidden" name="titles_all" value="">
+<input type="hidden" name="authors_all" value="">
+<input type="hidden" name="rubrics_all" value="">
+<input type="hidden" name="queryboxid" value="">
+<input type="hidden" name="itemboxid" value="">
+<input type="hidden" name="begin_year" value="">
+<input type="hidden" name="end_year" value="">
+<input type="hidden" name="issues" value="all">
+<input type="hidden" name="orderby" value="rank">
+<input type="hidden" name="order" value="rev">
+<input type="hidden" name="changed" value="1">
+
+<tr><td width=100% align=center valign=top>
+
+<div class="left-panel">
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr><td width=100% align=center valign=top><font color=#F26C4F><b><span class="expandable" onClick="$('#win_search').slideToggle(500, function(){didScroll = true;})" title="Поиск в Научной электронной библиотеке">ПОИСК</span></b></font>
+</td></tr>
+</table>
+<div ID="win_search" class="collapsed">
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr><td width=140 align=center valign=top>
+<div style="height: 10px;"></div>
+<div class="formfr" style="width:126px;"><input type=text id="ftext" name="ftext" value="" style="width:118px;" class="inputt" onKeyPress="search_enter(event);"></div>
+<div style="height: 11px;"></div>
+
+<div class="butblue" style="width: 52px;" onClick="check_search()">Найти</div>
+
+</td></tr>
+<tr><td><img src="/pic/1pix.gif"></td></tr>
+</table>
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr class="menub"><td align=center width=20 valign=bottom><img src="/images/or_kv.gif" width=7 height=7 vspace=1 class="shadow"></td><td align=left width=120 valign=top><a href="/querybox.asp?scope=newquery">Расширенный поиск</a></td></tr></table>
+<div style="height: 4px;"></div>
+</div>
+</div>
+
+</FORM>
+
+</td></tr>
+
+<tr><td><img src="/pic/1pix.gif" vspace=9></td></tr>
+<SCRIPT LANGUAGE="JavaScript">
+function check_all(){
+  if (document.forms["login"].login.value==""){
+    alert("Не указано имя пользователя!");
+	return false;
+	}
+  else if (document.forms["login"].password.value==""){
+    alert("Не указан пароль!");
+	return false;
+	}
+  else{
+    var frm = document.forms["login"];
+    frm.action="https://elibrary.ru/start_session.asp";
+    frm.target="";
+    frm.submit();
+   }
+}
+function login_enter(event){ 
+  var keycode; 
+  event = event || window.event; 
+  keycode = event.keyCode || event.which;
+  if(keycode==13){
+    check_all();
+	return false;
+  }
+} 
+</SCRIPT>
+
+<FORM method=post name="login" onSubmit="return false">
+<input type=hidden name="rpage" value=http://elibrary.ru/org_items.asp?show_refs=1&org_order=0&sortorder=0&itembox_name=&paysum=&pagenum=40&title_order=0&show_option=0&add_all=&hide_doubles=1&author_order=0&check_show_refs=on&orgsid=2179&orgdepid=0&items_all=&show_sotr=0&rubric_order=0&role_order=0&order=1&year_order=1&type_order=0&check_hide_doubles=on&itemboxid=&>
+<tr><td width=100% align=center valign=top>
+
+<div class="left-panel">
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr><td width=100% align=center valign=top><font color=#F26C4F><b><span class="expandable" onClick="$('#win_login').slideToggle(500, function(){didScroll = true;})" title="Вход в библиотеку для зарегистрированных пользователей">ВХОД</span></b></font>
+</td></tr>
+</table>
+
+<div ID="win_login" class="collapsed">
+<div style="height: 10px;"></div>
+
+<table border=0 cellspacing=0 cellpadding=2 width=140>
+
+<tr><td width=100% align=left valign=top>
+&nbsp;<font color=#000000>IP-адрес компьютера:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>109.248.140.34</font></td></tr>
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Название организации:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+
+<font color=#00008f><a href="/org_about.asp?orgsid=2179">Московский государственный лингвистический университет</a></font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Имя пользователя:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<div class="formfr" style="width:126px;"><input type=text id="login" name="login" value="" style="width:118px; text-align:center;" class="inputt" onKeyPress="login_enter(event)"></div>
+</td></tr>
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Пароль:</font></td></tr>
+<tr><td align=center width=100%>
+<div class="formfr" style="width:126px;"><input type=password id="password" name="password" value="" style="width:118px; text-align:center;" class="inputt" onKeyPress="login_enter(event)"></div>
+</td></tr>
+
+<tr><td align=center width=100%>
+
+<div style="height: 9px;"></div>
+<div class="butred" style="width: 52px;" onClick="check_all()">Вход</div>
+<div style="height: 9px;"></div>
+
+</td></tr></table>
+
+<table border=0 cellspacing=3 cellpadding=0 width=140>
+<tr valign=middle class="menub"><td align=center width=30><input type=checkbox name="knowme"></td><td align=left width=101>Запомнить меня</td></tr>
+<tr class="menub"><td align=right width=30 valign=bottom><img src="/images/or_kv.gif" width=7 height=7 hspace=9 vspace=1 class="shadow"></td><td align=left width=101 valign=top ><a href="/access_terms.asp">Правила доступа</a></td></tr>
+<tr class="menub"><td align=right width=30 valign=bottom><img src="/images/or_kv.gif" width=7 height=7 hspace=9 vspace=1 class="shadow"></td><td align=left width=101 valign=top ><a href="/author_info.asp?isnew=1&rpage=http%3A%2F%2Felibrary%2Eru%2Forg%5Fitems%2Easp%3Fshow%5Frefs%3D1%26org%5Forder%3D0%26sortorder%3D0%26itembox%5Fname%3D%26paysum%3D%26pagenum%3D40%26title%5Forder%3D0%26show%5Foption%3D0%26add%5Fall%3D%26hide%5Fdoubles%3D1%26author%5Forder%3D0%26check%5Fshow%5Frefs%3Don%26orgsid%3D2179%26orgdepid%3D0%26items%5Fall%3D%26show%5Fsotr%3D0%26rubric%5Forder%3D0%26role%5Forder%3D0%26order%3D1%26year%5Forder%3D1%26type%5Forder%3D0%26check%5Fhide%5Fdoubles%3Don%26itemboxid%3D%26">Регистрация</a></td></tr>
+<tr class="menub"><td align=right width=30 valign=bottom><img src="/images/or_kv.gif" width=7 height=7 hspace=9 vspace=1 class="shadow"></td><td align=left width=101 valign=top ><a href="/pass_request.asp">Забыли пароль?</a></td></tr>
+</table>
+<div style="height: 4px;"></div>
+</div>
+</div>
+</td></tr>
+</FORM>
+
+<tr><td><img src="/pic/1pix.gif" vspace=9></td></tr>
+<tr><td width=100% align=center valign=top>
+
+<div class="left-panel">
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr><td width=100% align=center valign=top><font color=#F26C4F><b><span class="expandable" onClick="$('#win_goto').slideToggle(500, function(){didScroll = true;})" title="Быстрый переход на популярные страницы сайта">НАВИГАТОР</span></b></font>
+</td></tr>
+</table>
+
+<div ID="win_goto" class="collapsed">
+<div style="height: 10px;"></div>
+
+<table border=0 cellspacing=4 cellpadding=0 width=140>
+
+<tr valign=top><td width=14 align=center><img src="/images/bl_kv.gif" border=0 width=7 height=7 hspace=3 class="shadow"></td><td align=left><a href="/defaultx.asp">Начальная страница</a></td></tr>
+
+<tr valign=top><td width=14 align=center><img src="/images/bl_kv.gif" border=0 width=7 height=7 hspace=3  class="shadow"></td><td align=left><a href="/titles.asp">Каталог журналов</a></td></tr>
+
+<tr valign=top><td width=14 align=center><img src="/images/bl_kv.gif" border=0 width=7 height=7 hspace=3  class="shadow"></td><td align=left><a href="/authors.asp">Авторский указатель</a></td></tr>
+
+<tr valign=top><td width=14 align=center><img src="/images/bl_kv.gif" border=0 width=7 height=7 hspace=3  class="shadow"></td><td align=left><a href="/orgs.asp">Список организаций</a></td></tr>
+
+<tr valign=top><td width=14 align=center><img src="/images/bl_kv.gif" border=0 width=7 height=7 hspace=3  class="shadow"></td><td align=left><a href="/rubrics.asp">Тематический рубрикатор</a></td></tr>
+
+<tr valign=top><td width=14 align=center><img src="/images/bl_kv.gif" border=0 width=7 height=7 hspace=3  class="shadow"></td><td align=left><a href="/querybox.asp?scope=newquery">Поисковые запросы</a></td></tr>
+
+</table>
+
+<div style="height: 10px;"></div>
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr class="menub"><td align=right width=40 valign=bottom><img src="/images/or_kv.gif" width=7 height=7 border=0 hspace=6 vspace=1 class="shadow"></td><td align=left width=100 valign=top><a href="/navigator.asp">Настройка</a></td></tr></table>
+<div style="height: 4px;"></div>
+
+</div>
+</div>
+</td></tr>
+
+<tr><td><img src="/pic/1pix.gif" vspace=9></td></tr>
+<tr><td width=100% align=center valign=top>
+
+<div class="left-panel">
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr><td width=100% align=center valign=top><font color=#F26C4F><b><span class="expandable" onClick="$('#win_legend').slideToggle(500, function(){didScroll = true;})" title="Назначение используе">ЛЕГЕНДА</span></b></font>
+</td></tr>
+</table>
+
+<div ID="win_legend" class="expanded">
+
+<div style="height: 10px;"></div>
+<table width=100% cellspacing=0 cellpadding=3 border=0 bgcolor=#eeeeee>
+<tr><td width=15% align=right valign=top><img src="/images/pdf_green.gif" width=16 height=16 hspace=3 border=0></td>
+<td width=85% align=left valign=middle><font color=#00008f>Доступ к полному тексту документа открыт</font></td></tr>
+<tr><td align=right valign=top><img src="/images/pdf_blue.gif" width=16 height=16 hspace=3 border=0></td>
+<td align=left valign=middle><font color=#00008f>Полный текст доступен на сайте издателя</font></td></tr>
+<tr><td align=right valign=top><img src="/images/pdf_yellow.gif" width=16 height=16 hspace=3 border=0></td>
+<td align=left valign=middle><font color=#00008f>Полный текст может быть получен через систему заказа</font></td></tr>
+<tr><td align=right valign=top><img src="/images/pdf_red.gif" width=16 height=16 hspace=3 border=0></td>
+<td align=left valign=middle><font color=#00008f>Доступ к полному тексту закрыт</font></td></tr>
+<tr><td valign=top align=center><font color=#00008f>-</font></td><td align=left><font color=#00008f>Если иконки нет - полный текст документа отсутствует в НЭБ</font></td></tr>
+
+</table>
+
+</div></div>
+</td></tr>
+
+
+<tr><td><img src="/pic/1pix.gif" vspace=9></td></tr>
+<SCRIPT LANGUAGE="JavaScript">
+function end_session(){
+
+  document.forms["session"].saveuser.value="1";
+
+  document.forms["session"].action="/end_session.asp";
+  document.forms["session"].target="";
+  document.forms["session"].submit()
+}
+</SCRIPT>
+<FORM action="/end_session.asp" method=POST name="session">
+<input type="hidden" name="saveuser" value="1">
+
+<tr><td width=100% align=center valign=top>
+
+<div class="left-panel">
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr><td width=100% align=center valign=top><font color=#F26C4F><b><span class="expandable" onClick="$('#win_session').slideToggle(500, function(){didScroll = true;})" title="Информация о текущей сессии пользователя">СЕССИЯ</span></b></font>
+</td></tr>
+</table>
+
+
+<div ID="win_session" class="collapsed">
+<div style="height: 10px;"></div>
+
+<table border=0 cellspacing=0 cellpadding=2 width=140>
+<tr><td width=100% align=left valign=top>
+&nbsp;<font color=#000000>Имя пользователя:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>Незарегистрированный пользователь</font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>IP-адрес компьютера:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>109.248.140.34</font></td></tr>
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Название организации:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+
+<font color=#00008f><a href="/org_about.asp?orgsid=2179">Московский государственный лингвистический университет</a></font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Начало работы:</font></td></tr>
+
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>29.01.2019 12:04</font></td></tr>
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Время работы:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>01:09</font></td></tr>
+</table>
+
+<div style="height: 10px;"></div>
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr class="menub"><td align=right width=30 valign=bottom><img src="/images/or_kv.gif" width=7 height=7 border=0 hspace=6 vspace=1 class="shadow"></td><td align=left width=110 valign=top><a href="/project_user_office.asp">Личный кабинет</a></td></tr>
+<tr><td><div style="height: 4px;"></div></td></tr>
+<tr class="menub"><td align=right width=30 valign=bottom><img src="/images/or_kv.gif" width=7 height=7 border=0 hspace=6 vspace=1 class="shadow"></td><td align=left width=110 valign=top><a href="javascript:end_session()">Закрыть сессию</a></td></tr>
+</table>
+<div style="height: 4px;"></div>
+
+</div>
+</div>
+</td></tr>
+
+<tr><td><img src="/pic/1pix.gif" vspace=9></td></tr>
+</FORM>
+<tr><td width=100% align=center valign=top>
+
+<div class="left-panel">
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr><td width=100% align=center valign=top><font color=#F26C4F><b><span class="expandable" onClick="$('#win_contact').slideToggle(500, function(){didScroll = true;})" title="Контактная информация Научной электронной библиотеки">КОНТАКТЫ</span></b></font>
+</td></tr>
+</table>
+
+<div ID="win_contact" class="collapsed">
+<div style="height: 10px;"></div>
+
+<table border=0 cellspacing=0 cellpadding=2 width=140>
+
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Служба поддержки:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>(7-495) 544-2494 доб. 1<br></font>
+<font color=#00008f><a href="mailto:support@elibrary.ru">support@elibrary.ru</a></font></td></tr>
+</td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Издателям журналов:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>(7-495) 544-2494 доб. 2<br></font>
+<font color=#00008f><a href="mailto:publish@elibrary.ru">publish@elibrary.ru</a></font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Издателям книг:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>(7-495) 544-2494 доб. 3<br></font>
+<font color=#00008f><a href="mailto:book@elibrary.ru">book@elibrary.ru</a></font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Организациям (Science Index):</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>(7-495) 544-2494 доб. 4<br></font>
+<font color=#00008f><a href="mailto:org@scienceindex.ru">org@scienceindex.ru</a></font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Конференции, семинары:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>(7-495) 544-2494 доб. 5<br></font>
+<font color=#00008f><a href="mailto:conf@elibrary.ru">conf@elibrary.ru</a></font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Подписчикам:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>(7-495) 544-24-93<br></font>
+<font color=#00008f><a href="mailto:sales@elibrary.ru">sales@elibrary.ru</a></font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Факс:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f>(7-495) 544-24-94</font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Почтовый адрес:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f><a href="/contact_new.asp">117246, г. Москва,
+Научный проезд, д. 14А, стр. 3, таунхаус 1</a></font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Адрес сервера:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f><a href="https://elibrary.ru">https://elibrary.ru</a></font></td></tr>
+
+<tr><td width=100% align=left valign=top>
+<div style="height: 2px;"></div>
+&nbsp;<font color=#000000>Размещение рекламы:</font></td></tr>
+<tr><td width=100% align=center valign=top>
+<font color=#00008f><a href="mailto:reklama@elibrary.ru">reklama@elibrary.ru</a></font></td></tr>
+
+</table>
+
+<div style="height: 10px;"></div>
+
+<table border=0 cellspacing=0 cellpadding=0 width=140>
+<tr class="menub"><td align=right width=30 valign=bottom><img src="/images/or_kv.gif" width=7 height=7 border=0 hspace=6 vspace=1 class="shadow"></td><td align=left width=110 valign=top><a href="/contact_new.asp">Схема проезда</a></td></tr>
+
+</table>
+<div style="height: 4px;"></div>
+
+</div>
+</div>
+</td></tr>
+
+<tr><td><img src="/pic/1pix.gif" vspace=9></td></tr>
+<tr><td width=100% align=center valign=top>
+<div style="width: 140px;" class="help-panel">
+<table width=140 cellspacing=0 cellpadding=3 border=0>
+<tr><td width=15% align=right valign=top>
+<img src="/images/but_orange_i.gif" width=15 height=15 hspace=0 border=0></td>
+<td width=85% align=left valign=middle><font color=#00008f>По всем вопросам, связанным с работой в системе Science Index, обращайтесь, пожалуйста, в службу поддержки:<br><br>
+7 (495) 544-2494<br><a href="mailto:support@elibrary.ru">support@elibrary.ru</a></font>
+</td></tr>
+</table>
+</div>
+</td></tr>
+
+<tr><td><img src="/pic/1pix.gif" vspace=9></td></tr>
+
+
+</table>
+
+</td><td align=left valign=top>
+
+<FORM method=post name="results" onSubmit="return false">
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr><td width=600 align=left valign=top>
+
+<table width=580 border=0 cellspacing=0 cellpadding=0>
+<tr><td width=100% align=left valign=top>
+
+<div class="header-panel">
+<div style="margin: 0; border: 0; padding: 0 0 5px 0; text-align: center; font-size: 9pt;"><font color=#5674b9><b>СПИСОК ПУБЛИКАЦИЙ ОРГАНИЗАЦИИ</b></font></div>
+</div>
+
+</td></tr></table>
+
+</td><td width=200 align=right valign=middle id="rightcol">
+<a href="/project_risc.asp"><img id="scienceindex_logo2" src="/images/scienceindex_logo2.svg" width=173 height=49 border=0 hspace=5 title="Информационно-аналитическая система SCIENCE INDEX"></a></td></tr>
+<script language="JavaScript">
+if (supportsSVG) {
+  document.getElementById("scienceindex_logo2").src="/images/scienceindex_logo2.svg";}
+else {
+  document.getElementById("scienceindex_logo2").src="/images/scienceindex_logo2.png";}
+</script>
+<tr><td align=left valign=top>
+
+<table width=580 border=0 cellspacing=0 cellpadding=0>
+
+<input type="hidden" name="itembox_name" value="">
+<input type="hidden" name="pagenum" value="40">
+<input type="hidden" name="add_all" value="">
+<input type="hidden" name="paysum" value="">
+<input type="hidden" name="orgsid" value="2179">
+<input type="hidden" name="show_refs" value="1">
+<input type="hidden" name="hide_doubles" value="1">
+<input type="hidden" name="items_all" value="">
+
+<tr><td width=100% align=left valign=top>
+
+<div style="width:540px; margin:0 20px 20px 20px; border:0; padding:0; text-align: center; font-size: 9pt;">
+<font color=#F26C4F><b>МОСКОВСКИЙ ГОСУДАРСТВЕННЫЙ ЛИНГВИСТИЧЕСКИЙ УНИВЕРСИТЕТ</b></font>  <br><font color=#000000>Москва</font>
+</div>
+
+<div class="form-panel">
+
+<div style="margin:0; border:0; padding:0;">
+<font color=#F26C4F><b><span class="expandable" onClick="$('#show_param').slideToggle(500, function(){didScroll = true;})" title="Показать/скрыть параметры поиска">ПАРАМЕТРЫ</span></b></font>
+</div>
+
+<div id="show_param" class="expanded">
+
+
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=top class="menus"><td width=514 align=left valign=top><font color=#00008f>&nbsp;&nbsp;Подразделение:</font></td></tr>
+<tr><td align=left valign=top><div class="formfr"><select id="orgdepid" name="orgdepid" style="width:510px" class="input" onKeyPress="submit_enter(event)">
+<option value="0" selected>
+
+<option value="19900" >Московский государственный лингвистический университет
+<option value="48148" >&nbsp;&nbsp;&nbsp;Институт иностранных языков имени Мориса Тореза
+<option value="39979" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Факультет английского языка
+<option value="39983" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра фонетики английского языка
+<option value="47518" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра грамматики и истории английского языка
+<option value="39981" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра стилистики английского языка
+<option value="39980" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лексикологии английского языка
+<option value="40563" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Факультет немецкого языка
+<option value="40566" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра фонетики немецкого языка
+<option value="45011" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра грамматики и истории немецкого языка
+<option value="40564" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лексикологии и стилистики немецкого языка
+<option value="39902" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Факультет французского языка
+<option value="39903" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лексикологии и стилистики французского языка
+<option value="47934" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра фонетики и грамматики французского языка
+<option value="47038" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Факультет заочного обучения
+<option value="47039" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лингвистики и межкультурной коммуникации
+<option value="47915" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра второго иностранного языка Института иностранных языков им....
+<option value="47849" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лингводидактики
+<option value="47557" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра классической филологии
+<option value="40019" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра общего и сравнительного языкознания
+<option value="39360" >&nbsp;&nbsp;&nbsp;Институт информационных наук
+<option value="47931" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра международной информационной безопасности
+<option value="47939" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лингвистики и профессиональной коммуникации в области...
+<option value="47929" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра информационно-аналитической деятельности
+<option value="48149" >&nbsp;&nbsp;&nbsp;Институт прикладной и математической лингвистики
+<option value="47521" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра прикладной и экспериментальной лингвистики
+<option value="47522" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лингвистической семантики
+<option value="40422" >&nbsp;&nbsp;&nbsp;Переводческий факультет
+<option value="46784" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра английского языка
+<option value="46788" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра французского языка
+<option value="46794" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра итальянского языка
+<option value="46789" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра португальского языка
+<option value="46783" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра скандинавских, нидерландского и финского языков
+<option value="46795" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра восточных языков
+<option value="46785" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра английского языка как второго
+<option value="46786" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра переводоведения и практики перевода английского языка
+<option value="46787" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра перевода французского языка
+<option value="46790" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра немецкого языка и перевода
+<option value="46792" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра испанского языка и перевода
+<option value="39898" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра отечественной и зарубежной литературы
+<option value="47925" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра русского языка и теории словесности
+<option value="37394" >&nbsp;&nbsp;&nbsp;Институт международных отношений и социально-политических наук (факультет)
+<option value="38132" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра теории и истории международных отношений
+<option value="37395" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра политологии
+<option value="37396" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра социологии
+<option value="39114" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра теории регионоведения
+<option value="39109" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лингвистики и профессиональной коммуникации в области...
+<option value="39110" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лингвистики и профессиональной коммуникации в области...
+<option value="39113" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра коммуникационных технологий
+<option value="48152" >&nbsp;&nbsp;&nbsp;Институт непрерывного образования
+<option value="47540" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра переводческого и педагогического мастерства
+<option value="44873" >&nbsp;&nbsp;&nbsp;Институт международных образовательных программ
+<option value="44877" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра русского языка как иностранного
+<option value="47926" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра иностранных языков и перевода для иностранных учащихся
+<option value="41097" >&nbsp;&nbsp;&nbsp;Институт гуманитарных и прикладных наук
+<option value="47538" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра философских наук
+<option value="40694" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра исторических наук
+<option value="47924" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра мировой культуры
+<option value="47519" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра психологии и педагогической антропологии
+<option value="47539" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра теологии
+<option value="47644" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лингвистики и профессиональной коммуникации в области...
+<option value="47930" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра документоведения
+<option value="47940" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра международного бизнеса и гостиничного дела
+<option value="40429" >&nbsp;&nbsp;&nbsp;Институт международного права и правосудия
+<option value="46186" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра международного права
+<option value="46187" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра гражданско-правовых дисциплин
+<option value="47517" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра лингвистики и профессиональной коммуникации в области права
+<option value="46190" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра национальной безопасности и правоохранительной деятельности
+<option value="46185" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра общетеоретических правовых дисциплин
+<option value="46188" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра уголовно-правовых дисциплин
+<option value="47524" >&nbsp;&nbsp;&nbsp;Общеуниверситетские кафедры
+<option value="41094" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Кафедра физического воспитания
+<option value="47558" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Военная кафедра
+<option value="8624" >&nbsp;&nbsp;&nbsp;Евразийский лингвистический институт в г. Иркутске
+</select></div></td></tr>
+</table>
+
+
+<div style="height:5px;"></div>
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=middle class="menus"><td width=30 align=right valign=middle><div id="txt_rubrics" class="win_expandable" style="color:#F26C4F;">▼</div></td><td width=481 align=left valign=middle><font color=#00008f>&nbsp;&nbsp;<span class="expandable" id="hdr_rubrics">ТЕМАТИКА</span></font><span id="rubricsheader" name="rubricsheader" style="color: #777777; padding: 10px;"></span></td></tr></table>
+
+<div id="rubrics" class="collapsed1" style="display: none; border:0; padding:0; margin:5px 0 0 0;">
+<table width=517 cellspacing=0 cellpadding=0 border=0 bgcolor=#5674b9>
+<tr><td width=107 align=right valign=middle><font color=#ffffff>Сортировка:</font>&nbsp;&nbsp;</td><td width=170 align=left valign=middle><select name="rubric_order" style="width:168px;" class="input" id="rubric_order">
+<option value="0" selected>по числу публикаций
+<option value="1" >по названию рубрики
+<option value="2" >выделенные в начале
+</select></td><td width=110 align=right valign=middle class="menus"><a href='javascript:select_options("rubric")'>Выделить все</a></td><td width=130 align=center valign=middle class="menus"><a href='javascript:deselect_options("rubric")'>Снять выделение</a></td></tr>
+</table>
+<div id="rubrics_options" style="height:50px; padding:0px; overflow:auto; width:517px; background:#f5f5f5; margin:10px 0 10px 0;">
+</div></div>
+
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=middle class="menus"><td width=30 align=right valign=middle><div id="txt_titles" class="win_expandable" style="color:#F26C4F;">▼</div></td><td width=481 align=left valign=middle><font color=#00008f>&nbsp;&nbsp;<span class="expandable" id="hdr_titles">ЖУРНАЛЫ</span></font><span id="titlesheader" name="titlesheader" style="color: #777777; padding: 10px;"></span></td></tr></table>
+
+<div id="titles" class="collapsed1" style="display: none; border:0; padding:0; margin:5px 0 0 0;">
+<table width=517 cellspacing=0 cellpadding=0 border=0 bgcolor=#5674b9>
+<tr><td width=107 align=right valign=middle><font color=#ffffff>Сортировка:</font>&nbsp;&nbsp;</td><td width=170 align=left valign=middle><select name="title_order" style="width:168px" class="input" id="title_order">
+<option value="0" selected>по числу публикаций
+<option value="1" >по названию журнала
+<option value="2" >выделенные в начале
+</select></td><td width=110 align=right valign=middle class="menus"><a href='javascript:select_options("title")'>Выделить все</a></td><td width=130 align=center valign=middle class="menus"><a href='javascript:deselect_options("title")'>Снять выделение</a></td></tr>
+</table>
+<div id="titles_options" style="height:50px; padding:0px; overflow:auto; width:517px; background:#f5f5f5; margin:10px 0 10px 0;">
+</div></div>
+
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=middle class="menus"><td width=30 align=right valign=middle><div id="txt_orgs" class="win_expandable" style="color:#F26C4F;">▼</div></td><td width=481 align=left valign=middle><font color=#00008f>&nbsp;&nbsp;<span class="expandable" id="hdr_orgs">ОРГАНИЗАЦИИ</span></font><span id="orgsheader" name="orgsheader" style="color: #777777; padding: 10px;"></span></td></tr></table>
+
+<div id="orgs" class="collapsed1" style="display: none; border:0; padding:0; margin:5px 0 0 0;">
+<table width=517 cellspacing=0 cellpadding=0 border=0 bgcolor=#5674b9>
+<tr><td width=107 align=right valign=middle><font color=#ffffff>Сортировка:</font>&nbsp;&nbsp;</td><td width=170 align=left valign=middle><select name="org_order" style="width:168px" class="input" id="org_order">
+<option value="0" selected>по числу публикаций
+<option value="1" >по названию организации
+<option value="2" >выделенные в начале
+</select></td><td width=110 align=right valign=middle class="menus"><a href='javascript:select_options("org")'>Выделить все</a></td><td width=130 align=center valign=middle class="menus"><a href='javascript:deselect_options("org")'>Снять выделение</a></td></tr>
+</table>
+<div id="orgs_options" style="height:50px; padding:0px; overflow:auto; width:517px; background:#f5f5f5; margin:10px 0 10px 0;">
+</div></div>
+
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=middle class="menus"><td width=30 align=right valign=middle><div id="txt_authors" class="win_expandable" style="color:#F26C4F;">▼</div></td><td width=481 align=left valign=middle><font color=#00008f>&nbsp;&nbsp;<span class="expandable" id="hdr_authors">АВТОРЫ</span></font><span id="authorsheader" name="authorsheader" style="color: #777777; padding: 10px;"></span></td></tr></table>
+
+<div id="authors" class="collapsed1" style="display: none; border:0; padding:0; margin:5px 0 0 0;">
+<table width=517 cellspacing=0 cellpadding=0 border=0 bgcolor=#5674b9>
+<tr><td width=107 align=right valign=middle><font color=#ffffff>Сортировка:</font>&nbsp;&nbsp;</td><td width=170 align=left valign=middle><select name="author_order" style="width:168px" class="input" id="author_order">
+<option value="0" selected>по числу публикаций
+<option value="1" >по фамилии
+<option value="2" >выделенные в начале
+</select></td><td width=110 align=right valign=middle class="menus"><a href='javascript:select_options("author")'>Выделить все</a></td><td width=130 align=center valign=middle class="menus"><a href='javascript:deselect_options("author")'>Снять выделение</a></td></tr>
+</table>
+<div id="authors_options" style="height:50px; padding:0px; overflow:auto; width:517px; background:#f5f5f5; margin:10px 0 10px 0;">
+</div></div>
+
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=middle class="menus"><td width=30 align=right valign=middle><div id="txt_years" class="win_expandable" style="color:#F26C4F;">▼</div></td><td width=481 align=left valign=middle><font color=#00008f>&nbsp;&nbsp;<span class="expandable" id="hdr_years">ГОДЫ</span></font><span id="yearsheader" name="yearsheader" style="color: #777777; padding: 10px;"></span></td></tr></table>
+
+<div id="years" class="collapsed1" style="display: none; border:0; padding:0; margin:5px 0 0 0;">
+<table width=517 cellspacing=0 cellpadding=0 border=0 bgcolor=#5674b9>
+<tr><td width=107 align=right valign=middle><font color=#ffffff>Сортировка:</font>&nbsp;&nbsp;</td><td width=170 align=left valign=middle><select name="year_order" style="width:168px" class="input" id="year_order">
+<option value="0" >по числу публикаций
+<option value="1" selected>по году
+<option value="2" >выделенные в начале
+</select></td><td width=110 align=right valign=middle class="menus"><a href='javascript:select_options("year")'>Выделить все</a></td><td width=130 align=center valign=middle class="menus"><a href='javascript:deselect_options("year")'>Снять выделение</a></td></tr>
+</table>
+<div id="years_options" style="height:50px; padding:0px; overflow:auto; width:517px; background:#f5f5f5; margin:10px 0 10px 0;">
+</div></div>
+
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=middle class="menus"><td width=30 align=right valign=middle><div id="txt_types" class="win_expandable" style="color:#F26C4F;">▼</div></td><td width=481 align=left valign=middle><font color=#00008f>&nbsp;&nbsp;<span class="expandable" id="hdr_types">ТИП ПУБЛИКАЦИИ</span></font><span id="typesheader" name="typesheader" style="color: #777777; padding: 10px;"></span></td></tr></table>
+
+<div id="types" class="collapsed1" style="display: none; border:0; padding:0; margin:5px 0 0 0;">
+<table width=517 cellspacing=0 cellpadding=0 border=0 bgcolor=#5674b9>
+<tr><td width=107 align=right valign=middle><font color=#ffffff>Сортировка:</font>&nbsp;&nbsp;</td><td width=170 align=left valign=middle><select name="type_order" style="width:168px" class="input" id="type_order">
+<option value="0" selected>по числу публикаций
+<option value="1" >по типу публикации
+<option value="2" >выделенные в начале
+</select></td><td width=110 align=right valign=middle class="menus"><a href='javascript:select_options("type")'>Выделить все</a></td><td width=130 align=center valign=middle class="menus"><a href='javascript:deselect_options("type")'>Снять выделение</a></td></tr>
+</table>
+<div id="types_options" style="height:50px; padding:0px; overflow:auto; width:517px; background:#f5f5f5; margin:10px 0 10px 0;">
+</div></div>
+
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=middle class="menus"><td width=30 align=right valign=middle><div id="txt_roles" class="win_expandable" style="color:#F26C4F;">▼</div></td><td width=481 align=left valign=middle><font color=#00008f>&nbsp;&nbsp;<span class="expandable" id="hdr_roles">УЧАСТИЕ В ПУБЛИКАЦИИ</span></font><span id="rolesheader" name="rolesheader" style="color: #777777; padding: 10px;"></span></td></tr></table>
+
+<div id="roles" class="collapsed1" style="display: none; border:0; padding:0; margin:5px 0 0 0;">
+<table width=517 cellspacing=0 cellpadding=0 border=0 bgcolor=#5674b9>
+<tr><td width=107 align=right valign=middle><font color=#ffffff>Сортировка:</font>&nbsp;&nbsp;</td><td width=170 align=left valign=middle><select name="role_order" style="width:168px" class="input" id="role_order">
+<option value="0" selected>по числу публикаций
+<option value="1" >по способу участия
+<option value="2" >выделенные в начале
+</select></td><td width=110 align=right valign=middle class="menus"><a href='javascript:select_options("role")'>Выделить все</a></td><td width=130 align=center valign=middle class="menus"><a href='javascript:deselect_options("role")'>Снять выделение</a></td></tr>
+</table>
+<div id="roles_options" style="height:50px; padding:0px; overflow:auto; width:517px; background:#f5f5f5; margin:10px 0 10px 0;">
+</div></div>
+
+
+<div style="height:5px;">&nbsp;</div>
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=top class="menus"><td width=514 align=left valign=top><font color=#00008f>&nbsp;&nbsp;Выбрать:</font></td></tr>
+<tr><td align=left valign=top>
+<div class="formfr"><select id="show_option" name="show_option" style="width:510px" class="input" onKeyPress="submit_enter(event)">
+<option value="1" >все публикации организации на портале elibrary.ru
+<option value="0" selected>публикации организации, включенные в РИНЦ
+<option value="2" >публикации организации, входящие в ядро РИНЦ
+<option value="5" >статьи в российских журналах, включенных в текущий перечень ВАК
+<option value="3" >статьи в российских журналах, входящих в Russian Science Citation Index
+<option value="9" >статьи в журналах, входящих в Web of Science Core Collection
+<option value="10" >статьи в журналах, входящих в Scopus
+<option value="4" >статьи в журналах, входящих в Web of Science или Scopus
+<option value="6" >статьи в журналах с импакт-фактором РИНЦ >0.02
+<option value="7" >статьи в журналах с импакт-фактором РИНЦ >0.1
+<option value="8" >статьи в журналах с импакт-фактором РИНЦ >0.3
+</select></div></td></tr>
+</table>
+
+<div style="height:5px;">&nbsp;</div>
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=top class="menus"><td width=514 align=left valign=top><font color=#00008f>&nbsp;&nbsp;Показывать:</font></td></tr>
+<tr><td align=left valign=top>
+<div class="formfr"><select id="show_sotr" name="show_sotr" style="width:510px" class="input" onKeyPress="submit_enter(event)">
+<option value="0" selected>публикации, в которых указана организация в качестве места работы автора
+<option value="1" >публикации сотрудников в период их работы в организации
+<option value="2" >все публикации нынешних сотрудников организации
+</select></div></td></tr>
+</table>
+
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr><td align=right width=24><input type=checkbox name="check_show_refs" id="check_show_refs" checked onClick='if (this.checked) {document.forms["results"].show_refs.value="1";} else {document.forms["results"].show_refs.value="0";}'></td><td align=left width=484>- учитывать публикации, извлеченные из списков цитируемой литературы&nbsp;<img src="/images/but_orange_question.gif" class="imghelp help" title='<p>Показываются не только публикации, имеющие полное библиографическое описание в РИНЦ, но и публикации, извлеченные из списков цитируемой литературы. Это позволяет учесть публикации, отсутствующие в РИНЦ, но при этом хорошо цитируемые в современной научной литературе</p>'></td></tr>
+<tr><td align=right width=24><input type=checkbox name="check_hide_doubles" id="check_hide_doubles" checked onClick='if (this.checked) {document.forms["results"].hide_doubles.value="1";} else {document.forms["results"].hide_doubles.value="0";}'></td><td align=left width=484>- объединять оригинальные и переводные версии статей и переиздания книг&nbsp;<img src="/images/but_orange_question.gif" class="imghelp help" title='<p>В этом режиме разные версии одной и той же публикации (например, ее оригинальная и переводная версии, или повторные издания одной и той же монографии) объединяются в группу и при расчетах всех показателей учитываются как одна публикация. В том числе ссылки, сделанные из таких публикаций, засчитываются как одна ссылка</p>'></td></tr>
+</table>
+
+<div style="height:5px;"></div>
+<table width=520 cellspacing=3 cellpadding=0 border=0>
+<tr valign=top class="menus"><td width=170 align=left valign=top><font color=#00008f>&nbsp;&nbsp;Сортировка:</font></td><td width=15></td><td width=139 align=left valign=top><font color=#00008f>&nbsp;&nbsp;Порядок:</font></td><td width=15></td><td width=80></td><td width=80></td></tr>
+<tr align=left valign=top>
+<td><div class="formfr"><select id="sortorder" name="sortorder" style="width:166px" class="input" onChange='var ord = document.forms["results"].order; switch(this.value) {case "0" : ord.value="1"; break; case "1" : ord.value="0"; break; case "2" : ord.value="0"; break; case "3" : ord.value="1"; break; }' onKeyPress="submit_enter(event)">
+<option value="0" selected>по дате выпуска
+<option value="1" >по названию публикации
+<option value="2" >по названию журнала
+<option value="3" >по числу цитирований
+<option value="4" >по дате размещения
+</select></div></td>
+<td></td>
+<td><div class="formfr"><select id="order" name="order" style="width:135px" class="input" onKeyPress="submit_enter(event)">
+<option value="0" >по возрастанию
+<option value="1" selected>по убыванию
+</select></div></td>
+<td></td>
+<td align=left valign=middle>
+<div class="butblue" style="width: 67px;" onClick="reset_form()">Очистить</div>
+</td>
+<td align=right valign=middle>
+<div class="butred" style="width: 67px;" onClick="pub_search()">Поиск</div>
+</td>
+</tr>
+</table>
+
+<div style="height:8px;"></div>
+</div>
+</div>
+
+
+
+<div style="width: 480px; margin: 10px 0 10px 30px; border: 0; padding: 10px 20px 7px 20px; text-align: center;" >
+<table width=480 cellspacing=3 cellpadding=0 border=0>
+<tr><td width=40 align=right valign=top><img src="images/but_orange_i.gif" width=15 height=15 hspace=10 border=0></td><td width=431 align=left valign=top class="redref"><font color=#00008f>Всего найдено</font> <b><font color=#ff0000>9424</font></b> <font color=#00008f>публикации с общим количеством цитирований: </font><b><font color=#ff0000><span id="totalcited"></span></font></b><font color=#00008f>.<br>Показано на данной странице: с <b>3901</b> по <b>4000</b>.</font></td></tr></table>
+</div>
+
+<table width=580 cellspacing=0 cellpadding=3 id="restab" style="border-spacing: 0px 4px;">
+<tr align=center valign=middle height=15>
+<td width=24><font color=#555555>&nbsp;<b>№</b></font></td>
+<td width=514><font color=#555555><b>Публикация</b></font></td>
+<td width=24><span title="Число цитирований публикации в РИНЦ"><font color=#555555><b>Цит.</b></font></span></td></tr>
+<tr><td colspan=3>
+<div style="width: 574px;" class="table-line"></div>
+</td></tr>
+
+<tr><td colspan=3 height=0></td></tr>
+
+
+
+<tr valign=middle id="arw24766043">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3901.</b></font><br><input type=checkbox name="tid24766043" id="tid24766043"  onClick='if (this.checked) {RowSelect("arw24766043",1)} else {RowSelect("arw24766043",0)}'><div id="pdf_24766043"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=24766043"><b>
+ВЫСТРАИВАНИЕ ИНДИВИДУАЛЬНОЙ ОБРАЗОВАТЕЛЬНОЙ ТРАЕКТОРИИ ОБУЧЕНИЯ НА ОСНОВЕ "WEB-ПОРТФОЛИО МАГИСТРАНТА"</b></a><br><font color=#00008f><i>
+Жданко Т.А.</i></font><br>
+<font color=#00008f>
+ В книге: <a href="/item.asp?id=23311149">Вариативность разноуровневого образования</a>
+ <i>Живокоренцева Т.В., Выговский Л.А., Богданова С.Ю., Глазков А.В., Жданко Т.А., Казыдуб Н.Н., Магальник Л.А., Ушева Т.Ф., Чупрова О.Ф., Шумовская А.Г.</i> стратегии реализации. Коллективная монография. Иркутский государственный лингвистический университет. Иркутск, 2014.  С. 85-95.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_24766043').load("ispdf.asp?itemid=24766043&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw25916130">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3902.</b></font><br><input type=checkbox name="tid25916130" id="tid25916130"  onClick='if (this.checked) {RowSelect("arw25916130",1)} else {RowSelect("arw25916130",0)}'><div id="pdf_25916130"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=25916130"><b>
+НЕКОТОРЫЕ ВОПРОСЫ ЭФФЕКТИВНОГО ИСПОЛЬЗОВАНИЯ ЭЛЕКТРОННЫХ РЕСУРСОВ ДЛЯ ПОДГОТОВКИ ЭКОНОМИЧЕСКИХ И УПРАВЛЕНЧЕСКИХ КАДРОВ</b></a><br><font color=#00008f><i>
+Удалых С.К.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=24764344">Организация электронного обучения и применение дистанционных образовательных технологий в образовательной организации</a>
+Материалы Всероссийской научно-практической Интернет-конференции (Электронный ресурс). 2014.  С. 92-96.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_25916130').load("ispdf.asp?itemid=25916130&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw24765995">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3903.</b></font><br><input type=checkbox name="tid24765995" id="tid24765995"  onClick='if (this.checked) {RowSelect("arw24765995",1)} else {RowSelect("arw24765995",0)}'><div id="pdf_24765995"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=24765995"><b>
+РЕФЛЕКСИВНЫЙ ПОДХОД К СОЗДАНИЮ ИНДИВИДУАЛЬНЫХ ОБРАЗОВАТЕЛЬНЫХ ПРОГРАММ ОБУЧАЮЩИХСЯ</b></a><br><font color=#00008f><i>
+Ушева Т.Ф.</i></font><br>
+<font color=#00008f>
+ В книге: <a href="/item.asp?id=23311149">Вариативность разноуровневого образования</a>
+ <i>Живокоренцева Т.В., Выговский Л.А., Богданова С.Ю., Глазков А.В., Жданко Т.А., Казыдуб Н.Н., Магальник Л.А., Ушева Т.Ф., Чупрова О.Ф., Шумовская А.Г.</i> стратегии реализации. Коллективная монография. Иркутский государственный лингвистический университет. Иркутск, 2014.  С. 95-107.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=24765995" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_24765995').load("ispdf.asp?itemid=24765995&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw24812973">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3904.</b></font><br><input type=checkbox name="tid24812973" id="tid24812973"  onClick='if (this.checked) {RowSelect("arw24812973",1)} else {RowSelect("arw24812973",0)}'><div id="pdf_24812973"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=24812973"><b>
+КОГНИТИВНЫЙ МЕХАНИЗМ РЕЧЕВОЙ КОММУНИКАЦИИ</b></a><br><font color=#00008f><i>
+Костюшкина Г.М., Колмогорова А.В.</i></font><br>
+<font color=#00008f>
+ В книге: <a href="/item.asp?id=23155085">Концептуальная систематика речевой коммуникации</a>
+ <i>Костюшкина Г.М., Колмогорова А.В., Зырянова И.Н., Ивус О.Н., Косова О.А., Пащенко М.А., Пищерская Е.Н., Туфанова Ю.В.</i> коллективная монография. Иркутский государственный лингвистический университет. Иркутск, 2014.  С. 9-54.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=24812973" title="Список статей, ссылающихся на данную">12</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_24812973').load("ispdf.asp?itemid=24812973&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw24596311">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3905.</b></font><br><input type=checkbox name="tid24596311" id="tid24596311"  onClick='if (this.checked) {RowSelect("arw24596311",1)} else {RowSelect("arw24596311",0)}'><div id="pdf_24596311"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=24596311"><b>
+СПЕЦИФИКА ПРЕПОДАВАНИЯ ПРОФЕССИОНАЛЬНО- ОРИЕНТИРОВАННОГО ПЕРЕВОДА НА НЕПЕРЕВОДЧЕСКИХ СПЕЦИАЛЬНОСТЯХ</b></a><br><font color=#00008f><i>
+Олихова Е.О.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=24595995">АКТУАЛЬНЫЕ ПРОБЛЕМЫ ЛИНГВИСТИКИИ ЛИНГВОДИДАКТИКИ ИНОСТРАННОГО ЯЗЫКА ДЕЛОВОГО И ПРОФЕССИОНАЛЬНОГО ОБЩЕНИЯ</a>
+Материалы VI Международной научно-практической конференции. Редакционная коллегия: Е.Н. Малюга, Т.А. Дмитренко, Е.В. Пономаренко, Ю.Н. Марчук, Е.В. Бреус. 2014.  С. 97-98.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_24596311').load("ispdf.asp?itemid=24596311&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23350536">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3906.</b></font><br><input type=checkbox name="tid23350536" id="tid23350536"  onClick='if (this.checked) {RowSelect("arw23350536",1)} else {RowSelect("arw23350536",0)}'><div id="pdf_23350536"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23350536"><b>
+ЛИНГВОКУЛЬТУРНАЯ СПЕЦИФИКА РУССКОЙ РЕЧИ В ИНОЯЗЫЧНОМ ОКРУЖЕНИИ И ЕЕ ИНТЕРПРЕТАЦИИ</b></a><br><font color=#00008f><i>
+Белоусов В.Н.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=23350496">Динамика языковых и культурных процессов в современной России</a>
+2014.  С. 30-34.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_23350536').load("ispdf.asp?itemid=23350536&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw36365300">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3907.</b></font><br><input type=checkbox name="tid36365300" id="tid36365300"  onClick='if (this.checked) {RowSelect("arw36365300",1)} else {RowSelect("arw36365300",0)}'><div id="pdf_36365300"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=36365300"><b>
+ЛЕКСИКО-СЕМАНТИЧЕСКИЕ ТИПЫ НАИМЕНОВАНИЙ ВЕЩЕСТВ В КВАНТИТАТИВНЫХ КОНСТРУКЦИЯХ (НА МАТЕРИАЛЕ АНГЛИЙСКОГО, КИТАЙСКОГО И РУССКОГО ЯЗЫКОВ)</b></a><br><font color=#00008f><i>
+Михалькова Н.В.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=36365240">Наука - образованию, производству, экономике</a>
+Материалы ХIХ (66) Региональной научно-практической конференции преподавателей, научных сотрудников и аспирантов. В 2 томах. Главный редактор И.М. Прищепа,. 2014.  С. 111-113.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_36365300').load("ispdf.asp?itemid=36365300&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw35546195">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3908.</b></font><br><input type=checkbox name="tid35546195" id="tid35546195"  onClick='if (this.checked) {RowSelect("arw35546195",1)} else {RowSelect("arw35546195",0)}'><div id="pdf_35546195"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=35546195"><b>
+ЭТИЧЕСКИЕ ОСНОВАНИЯ БЫТОВОЙ СКАЗКИ: ОБРАЗЕЦ ДЛЯ ПОДРАЖАНИЯ</b></a><br><font color=#00008f><i>
+Гусейнова И.А.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=25784994">Bajkowe fascynacje humanistów</a>
+Сер. "Bajka w Przestrzeni Naukowej i Edukacyjnej" pod redakcją Magdaleny Zaorska i Adama Grabowskiego. Olsztyn, 2014.  С. 72-80.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_35546195').load("ispdf.asp?itemid=35546195&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw24026423">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3909.</b></font><br><input type=checkbox name="tid24026423" id="tid24026423"  onClick='if (this.checked) {RowSelect("arw24026423",1)} else {RowSelect("arw24026423",0)}'><div id="pdf_24026423"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=24026423"><b>
+ТЕКСТ ПУТЕВОДИТЕЛЯ КАК ОБЪЕКТ КОГНИТОЛОГИИ</b></a><br><font color=#00008f><i>
+Евтушенко О.В.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=24026370">ТЕКСТ, КОНТЕКСТ, ИНТЕРТЕКСТ</a>
+Сборник научных статей по материалам Международной научной конференции. Ответственные редакторы В.А. Коханова, Е.Ю. Геймбух. 2014.  С. 39-46.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_24026423').load("ispdf.asp?itemid=24026423&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw24026412">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3910.</b></font><br><input type=checkbox name="tid24026412" id="tid24026412"  onClick='if (this.checked) {RowSelect("arw24026412",1)} else {RowSelect("arw24026412",0)}'><div id="pdf_24026412"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=24026412"><b>
+СЕМИОТИЧЕСКАЯ ГЕТЕРОГЕННОСТЬ ТУРИСТИЧЕСКОГО ДИСКУРСА</b></a><br><font color=#00008f><i>
+Филатова Н.В.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=24026370">ТЕКСТ, КОНТЕКСТ, ИНТЕРТЕКСТ</a>
+Сборник научных статей по материалам Международной научной конференции. Ответственные редакторы В.А. Коханова, Е.Ю. Геймбух. 2014.  С. 65-72.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=24026412" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_24026412').load("ispdf.asp?itemid=24026412&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23043482">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3911.</b></font><br><input type=checkbox name="tid23043482" id="tid23043482"  onClick='if (this.checked) {RowSelect("arw23043482",1)} else {RowSelect("arw23043482",0)}'><div id="pdf_23043482"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23043482"><b>
+ФЕЛЬЕТОН И САТИРИЧЕСКИЙ РАССКАЗ: ЖАНРОВЫЕ СХОДСТВА И РАЗЛИЧИЯ</b></a><br><font color=#00008f><i>
+Северина Е.А.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=23043456">Жанры и типы текста в научном и медийном дискурсе</a>
+межвузовский сборник научных трудов. ответственный редактор Пастухов Александр Гавриилович. 2014.  С. 210-221.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_23043482').load("ispdf.asp?itemid=23043482&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw29228076">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3912.</b></font><br><input type=checkbox name="tid29228076" id="tid29228076"  onClick='if (this.checked) {RowSelect("arw29228076",1)} else {RowSelect("arw29228076",0)}'><div id="pdf_29228076"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=29228076"><b>
+ФЕНОМЕН ЛИНГВИСТИЧЕСКОЙ РЕВИТАЛИЗАЦИИ ВОЕННЫХ АББРЕВИАТУР, ФУНКЦИОНИРУЮЩИХ В ИНСТИТУЦИОНАЛЬНОМ ДИСКУРСЕ ВООРУЖЕННЫХ СИЛ ФРАНЦИИ</b></a><br><font color=#00008f><i>
+Сдобнова Ю.Н.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=29228061">Прикладная лингвистика. Терминоведение</a>
+сборник научных статей. Москва, 2014.  С. 137-145.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_29228076').load("ispdf.asp?itemid=29228076&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22607379">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3913.</b></font><br><input type=checkbox name="tid22607379" id="tid22607379"  onClick='if (this.checked) {RowSelect("arw22607379",1)} else {RowSelect("arw22607379",0)}'><div id="pdf_22607379"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22607379"><b>
+ЭТНОКУЛЬТУРНЫЙ АСПЕКТ ИЗУЧЕНИЯ СОЗНАНИЯ</b></a><br><font color=#00008f><i>
+Гридина Н.В., Сабуркина Н.В.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=22607350">Коммуникация в современном поликультурном мире: диалог культур</a>
+Ежегодный сборник научных трудов. Ответственный редактор Т.А. Барановская. Москва, 2014.  С. 204-211.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22607379').load("ispdf.asp?itemid=22607379&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22607362">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3914.</b></font><br><input type=checkbox name="tid22607362" id="tid22607362"  onClick='if (this.checked) {RowSelect("arw22607362",1)} else {RowSelect("arw22607362",0)}'><div id="pdf_22607362"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22607362"><b>
+К ВОПРОСУ О ГРАНИЦАХ И НЕКОТОРЫХ ЯЗЫКОВЫХ ОСОБЕННОСТЯХ МЕДИЙНОГО ПОЛИТИЧЕСКОГО ДИСКУРСА</b></a><br><font color=#00008f><i>
+Чайкина А.Ю.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=22607350">Коммуникация в современном поликультурном мире: диалог культур</a>
+Ежегодный сборник научных трудов. Ответственный редактор Т.А. Барановская. Москва, 2014.  С. 94-107.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22607362').load("ispdf.asp?itemid=22607362&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23790955">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3915.</b></font><br><input type=checkbox name="tid23790955" id="tid23790955"  onClick='if (this.checked) {RowSelect("arw23790955",1)} else {RowSelect("arw23790955",0)}'><div id="pdf_23790955"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23790955"><b>
+РОЛЬ ПРЕОДОЛЕВАЮЩЕГО ПОВЕДЕНИЯ В ПРОЦЕССЕ СОЦИАЛЬНО-ПСИХОЛОГИЧЕСКОЙ АДАПТАЦИИ ЛИЧНОСТИ</b></a><br><font color=#00008f><i>
+Краюшкина Н.А.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=23790067">Психология психических состояний</a>
+VIII Международная зимняя школа, сборник материалов. Под редакцией А.О. Прохорова, Л.В. Артищевой. 2014.  С. 51-53.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_23790955').load("ispdf.asp?itemid=23790955&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23808906">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3916.</b></font><br><input type=checkbox name="tid23808906" id="tid23808906"  onClick='if (this.checked) {RowSelect("arw23808906",1)} else {RowSelect("arw23808906",0)}'><div id="pdf_23808906"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23808906"><b>
+ЮДИФЬ: НАРОДНАЯ ГЕРОИНЯ ИЛИ FAMME FATALE? (О КУЛЬТУРНОЙ СЕМАНТИКЕ НЕМЕЦКИХ БИБЛЕИЗМОВ)</b></a><br><font color=#00008f><i>
+Карпенко Е.И.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=23808898">ЯЗЫК, СОЗНАНИЕ, КОММУНИКАЦИЯ</a>
+Москва, 2014.  С. 126-133.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_23808906').load("ispdf.asp?itemid=23808906&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw24255251">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3917.</b></font><br><input type=checkbox name="tid24255251" id="tid24255251"  onClick='if (this.checked) {RowSelect("arw24255251",1)} else {RowSelect("arw24255251",0)}'><div id="pdf_24255251"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=24255251"><b>
+ОСОБЕННОСТИ СОВРЕМЕННОГО РАЗГРАНИЧЕНИЯ "ПУБЛИЦИСТИЧЕСКОГО СТИЛЯ" И "СТИЛЯ СМИ И РЕКЛАМЫ" В ЯПОНСКОМ ЯЗЫКЕ</b></a><br><font color=#00008f><i>
+Жукова И.В.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=24255241">МЕЖКУЛЬТУРНАЯ КОММУНИКАЦИЯ: АСПЕКТЫ ДИДАКТИКИ</a>
+Материалы межвузовского научно-методического семинара. 2014.  С. 20-28.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_24255251').load("ispdf.asp?itemid=24255251&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23155547">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3918.</b></font><br><input type=checkbox name="tid23155547" id="tid23155547"  onClick='if (this.checked) {RowSelect("arw23155547",1)} else {RowSelect("arw23155547",0)}'><div id="pdf_23155547"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23155547"><b>
+ПОДХОДЫ К МОДЕЛИ НОВОГО МЕХАНИЗМА РЫНКА ТРУДА В ТЕОРИИ БУДУЩЕГО: ЭВОЛЮЦИОННО-ОРГАНИЗАЦИОННО-ИНСТИТУЦИОНАЛЬНОЕ ВИДЕНИЕ</b></a><br><font color=#00008f><i>
+Беклемешев В.П.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=23155474">СПРОС И ПРЕДЛОЖЕНИЕ НА РЫНКЕ ТРУДА И РЫНКЕ ОБРАЗОВАТЕЛЬНЫХ УСЛУГ В РЕГИОНАХ РОССИИ</a>
+Сборник докладов по материалам Одиннадцатой Всероссийской научно-практической Интернет-конференции. Под редакцией В. А. Гуртова. 2014.  С. 45-54.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_23155547').load("ispdf.asp?itemid=23155547&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw26473028">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3919.</b></font><br><input type=checkbox name="tid26473028" id="tid26473028"  onClick='if (this.checked) {RowSelect("arw26473028",1)} else {RowSelect("arw26473028",0)}'><div id="pdf_26473028"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=26473028"><b>
+МОДЕЛИ РАЗВИТИЯ ИННОВАЦИОННЫХ ПРОЦЕССОВ КРУПНОЙ НЕФИНАНСОВОЙ КОРПОРАЦИИ</b></a><br><font color=#00008f><i>
+Башин Ю.Б., Борисова К.Б.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=26473008">Стратегическое планирование и развитие предприятий</a>
+Материалы
+Пятнадцатого
+всероссийского
+симпозиума. Под
+ред. 
+Г.Б. 
+Клейнера. 2014.  С. 32-34.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_26473028').load("ispdf.asp?itemid=26473028&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw27171423">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3920.</b></font><br><input type=checkbox name="tid27171423" id="tid27171423"  onClick='if (this.checked) {RowSelect("arw27171423",1)} else {RowSelect("arw27171423",0)}'><div id="pdf_27171423"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=27171423"><b>
+МЕТОДОЛОГИЧЕСКИЕ "ПРОВАЛЫ" НЕОКЛАССИКИ И ФУНКЦИИ ЗНАНИЙ В СОВРЕМЕННОЙ ЭКОНОМИКЕ</b></a><br><font color=#00008f><i>
+Салихов Б.В., Антипова Д.А.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=27171253">Инновационное развитие общества: условия, противоречия, приоритеты</a>
+материалы Х международной научной конференции: в 3-х частях. Под редакцией 
+А.В. Семенова; Ю.С. Руденко. 2014.  С. 340-346.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_27171423').load("ispdf.asp?itemid=27171423&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw36772095">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3921.</b></font><br><input type=checkbox name="tid36772095" id="tid36772095"  onClick='if (this.checked) {RowSelect("arw36772095",1)} else {RowSelect("arw36772095",0)}'><div id="pdf_36772095"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=36772095"><b>
+ПРОФЕССИОНАЛЬНЫЙ СТАНДАРТ СПЕЦИАЛИСТА В ОБЛАСТИ БИБЛИОТЕЧНО-ИНФОРМАЦИОННОЙ ДЕЯТЕЛЬНОСТИ: НЕОБХОДИМОСТЬ, КОНЦЕПЦИЯ, ПРОЕКТИРОВАНИЕ</b></a><br><font color=#00008f><i>
+Клюев В.К.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=24147720">Библиотечное дело - 2014: библиотечно-информационная деятельность и документно-информационные технологии в сфере культуры и образования: Скворцовские чтения</a>
+Материалы девятнадцатой международной научной конференции. Московский государственный университет культуры и искусств, Институт информационных коммуникаций, Государственная публичная научно-техническая библиотека России, Центральная научная сельскохозяйственная библиотека РАСХН, Отделение библиотековедения Международной академии информатизации. 2014.  С. 62-66.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=36772095" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_36772095').load("ispdf.asp?itemid=36772095&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21612722">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3922.</b></font><br><input type=checkbox name="tid21612722" id="tid21612722"  onClick='if (this.checked) {RowSelect("arw21612722",1)} else {RowSelect("arw21612722",0)}'><div id="pdf_21612722"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21612722"><b>
+ОБЕСПЕЧЕНИЕ ПСИХОЛОГИЧЕСКОЙ БЕЗОПАСНОСТИ ДОШКОЛЬНИКА В ПРОЦЕССЕ ЕГО СОЦИАЛИЗАЦИИ В ДОУ</b></a><br><font color=#00008f><i>
+Погодаева М.В.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=21569777">Категория "социального" в современной педагогике и психологии</a>
+Материалы 2-й научно-практической конференции (заочной) с международным участием: в 2 частях. Редакционная коллегия: А.Ю. Нагорнова (ответственный редактор), А.Н. Ярыгин, О.И. Донина, Н.И. Мешков, Л.В. Гурылева, Л.И. Еремина. 2014.  С. 81-83.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21612722').load("ispdf.asp?itemid=21612722&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw26794639">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3923.</b></font><br><input type=checkbox name="tid26794639" id="tid26794639"  onClick='if (this.checked) {RowSelect("arw26794639",1)} else {RowSelect("arw26794639",0)}'><div id="pdf_26794639"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=26794639"><b>
+СУЩНОСТЬ И ЦЕННОСТНО-СМЫСЛОВАЯ ОСНОВА ЭКОНОМИЧЕСКОГО ЗНАНИЯ</b></a><br><font color=#00008f><i>
+Салихов Б.В., Салихова И.С.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=26794467">Инновационное развитие общества: условия, противоречия, приоритеты</a>
+материалы Х международной научной конференции: в 3-х частях. 2014.  С. 143-152.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_26794639').load("ispdf.asp?itemid=26794639&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21748355">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3924.</b></font><br><input type=checkbox name="tid21748355" id="tid21748355"  onClick='if (this.checked) {RowSelect("arw21748355",1)} else {RowSelect("arw21748355",0)}'><div id="pdf_21748355"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21748355"><b>
+К ОДНОЙ ИЗ ФУНКЦИЙ СИНОНИМИЧЕСКИХ ПОВТОРОВ</b></a><br><font color=#00008f><i>
+Хантакова В.М.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=21748342">Функциональные аспекты языка: традиции и перспективы</a>
+Материалы Чтений памяти профессора А.Т. Кукушкиной. Нижегородский государственный лингвистический университет им. Н.А. Добролюбова. 2014.  С. 146-154.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21748355').load("ispdf.asp?itemid=21748355&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw32370364">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3925.</b></font><br><input type=checkbox name="tid32370364" id="tid32370364"  onClick='if (this.checked) {RowSelect("arw32370364",1)} else {RowSelect("arw32370364",0)}'><div id="pdf_32370364"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=32370364"><b>
+ЛИНГВИСТИЧЕСКАЯ СТИЛИСТИКА И СТИЛИСТИЧЕСКАЯ КОМПЕТЕНЦИЯ</b></a><br><font color=#00008f><i>
+Фадеева Г.М.</i></font><br>
+<font color=#00008f>
+ В сборнике: <a href="/item.asp?id=21629549">Стилистика сегодня и завтра</a>
+Материалы III Международной научной конференции. 2014.  С. 352-355.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_32370364').load("ispdf.asp?itemid=32370364&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23489557">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3926.</b></font><br><input type=checkbox name="tid23489557" id="tid23489557"  onClick='if (this.checked) {RowSelect("arw23489557",1)} else {RowSelect("arw23489557",0)}'><div id="pdf_23489557"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23489557"><b>
+ON PRINCIPLES OF ANNOTATED DATABASES OF THE SEMANTIC FIELD "AGGRESSION"</b></a><br><font color=#00008f><i>
+Potapova R., Komalova L.R.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34072229">Lecture Notes in Computer Science (см. в книгах)</a>. 
+2014. 
+Т. 8773.  С. 322-328.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=23489557" title="Список статей, ссылающихся на данную">13</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_23489557').load("ispdf.asp?itemid=23489557&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw24002377">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3927.</b></font><br><input type=checkbox name="tid24002377" id="tid24002377"  onClick='if (this.checked) {RowSelect("arw24002377",1)} else {RowSelect("arw24002377",0)}'><div id="pdf_24002377"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=24002377"><b>
+ON THE POSSIBILITY OF THE SKYPE CHANNEL SPEAKER IDENTIFICATION (ON THE BASIS OF ACOUSTIC PARAMETERS)</b></a><br><font color=#00008f><i>
+Potapova R., Sobakin A., Maslov A.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34072229">Lecture Notes in Computer Science (см. в книгах)</a>. 
+2014. 
+Т. 8773.  С. 329-336.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=24002377" title="Список статей, ссылающихся на данную">4</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_24002377').load("ispdf.asp?itemid=24002377&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22594761">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3928.</b></font><br><input type=checkbox name="tid22594761" id="tid22594761"  onClick='if (this.checked) {RowSelect("arw22594761",1)} else {RowSelect("arw22594761",0)}'><div id="pdf_22594761"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22594761"><b>
+СОСТОЯНИЕ И ПЕРСПЕКТИВЫ СОТРУДНИЧЕСТВА РОССИИ И ИРАНА</b></a><br><font color=#00008f><i>
+Оруджова Т.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34038251">Россия и мусульманский мир</a>. 
+2014. 
+<a href="/contents.asp?id=34038251&selid=22594761">№&nbsp;10</a>.  С. 93-102.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22594761').load("ispdf.asp?itemid=22594761&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22598452">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3929.</b></font><br><input type=checkbox name="tid22598452" id="tid22598452"  onClick='if (this.checked) {RowSelect("arw22598452",1)} else {RowSelect("arw22598452",0)}'><div id="pdf_22598452"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22598452"><b>
+ОСОБЕННОСТИ ФОРМИРОВАНИЯ И РАЗВИТИЯ ПОЛИТИЧЕСКОЙ СИСТЕМЫ СОВРЕМЕННОГО УЗБЕКИСТАНА</b></a><br><font color=#00008f><i>
+Космаенко Д.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34038434">Россия и мусульманский мир</a>. 
+2014. 
+<a href="/contents.asp?id=34038434&selid=22598452">№&nbsp;11&nbsp;(269)</a>.  С. 101-105.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22598452').load("ispdf.asp?itemid=22598452&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22598453">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3930.</b></font><br><input type=checkbox name="tid22598453" id="tid22598453"  onClick='if (this.checked) {RowSelect("arw22598453",1)} else {RowSelect("arw22598453",0)}'><div id="pdf_22598453"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22598453"><b>
+СПЕЦИФИКА ПОЛИТИЧЕСКОГО ЛИДЕРСТВА В ЦЕНТРАЛЬНОЙ АЗИИ НА ПРИМЕРЕ УЗБЕКИСТАНА И КАЗАХСТАНА</b></a><br><font color=#00008f><i>
+Кочедыков И.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34038434">Россия и мусульманский мир</a>. 
+2014. 
+<a href="/contents.asp?id=34038434&selid=22598453">№&nbsp;11&nbsp;(269)</a>.  С. 106-108.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22598453').load("ispdf.asp?itemid=22598453&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22598454">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3931.</b></font><br><input type=checkbox name="tid22598454" id="tid22598454"  onClick='if (this.checked) {RowSelect("arw22598454",1)} else {RowSelect("arw22598454",0)}'><div id="pdf_22598454"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22598454"><b>
+БОРЬБА ЗА ВОДНЫЕ РЕСУРСЫ КАК ДЕТЕРМИНАНТА МЕЖДУНАРОДНЫХ ОТНОШЕНИЙ В ЦЕНТРАЛЬНОЙ АЗИИ</b></a><br><font color=#00008f><i>
+Монахов В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34038434">Россия и мусульманский мир</a>. 
+2014. 
+<a href="/contents.asp?id=34038434&selid=22598454">№&nbsp;11&nbsp;(269)</a>.  С. 109-113.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22598454').load("ispdf.asp?itemid=22598454&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21390230">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3932.</b></font><br><input type=checkbox name="tid21390230" id="tid21390230"  onClick='if (this.checked) {RowSelect("arw21390230",1)} else {RowSelect("arw21390230",0)}'><div id="pdf_21390230"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21390230"><b>
+XIX МЕЖДУНАРОДНЫЙ ЛИНГВИСТИЧЕСКИЙ КОНГРЕСС</b></a><br><font color=#00008f><i>
+Кузнецов В.Г., Вельмезова Е.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33952971">Вопросы языкознания</a>. 
+2014. 
+<a href="/contents.asp?id=33952971&selid=21390230">№&nbsp;2</a>.  С. 147-153.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21390230').load("ispdf.asp?itemid=21390230&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21646238">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3933.</b></font><br><input type=checkbox name="tid21646238" id="tid21646238"  onClick='if (this.checked) {RowSelect("arw21646238",1)} else {RowSelect("arw21646238",0)}'><div id="pdf_21646238"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21646238"><b>
+XV МЕЖДУНАРОДНАЯ КОНФЕРЕНЦИЯ SPECOM' 2013 "SPEECH AND COMPUTER" ("РЕЧЬ И КОМПЬЮТЕР")</b></a><br><font color=#00008f><i>
+Потапова Р.К., Потапов В.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33966190">Вопросы языкознания</a>. 
+2014. 
+<a href="/contents.asp?id=33966190&selid=21646238">№&nbsp;3</a>.  С. 138-140.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21646238" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21646238').load("ispdf.asp?itemid=21646238&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21796900">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3934.</b></font><br><input type=checkbox name="tid21796900" id="tid21796900"  onClick='if (this.checked) {RowSelect("arw21796900",1)} else {RowSelect("arw21796900",0)}'><div id="pdf_21796900"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21796900"><b>
+ИСТОРИЯ ЯЗЫКОЗНАНИЯ НА XIX МЕЖДУНАРОДНОМ ЛИНГВИСТИЧЕСКОМ КОНГРЕССЕ</b></a><br><font color=#00008f><i>
+Кузнецов В.Г.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33974829">Вопросы языкознания</a>. 
+2014. 
+<a href="/contents.asp?id=33974829&selid=21796900">№&nbsp;4</a>.  С. 149-151.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21796900').load("ispdf.asp?itemid=21796900&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22798388">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3935.</b></font><br><input type=checkbox name="tid22798388" id="tid22798388"  onClick='if (this.checked) {RowSelect("arw22798388",1)} else {RowSelect("arw22798388",0)}'><div id="pdf_22798388"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22798388"><b>
+ПРОГРАММА МЕТОДИЧЕСКОЙ РАБОТЫ С ПРЕПОДАВАТЕЛЯМИ ШКОЛЫ ИНОСТРАННЫХ ЯЗЫКОВ "LVR" ПО ПРОЕКТИРОВАНИЮ МЕТАПРЕДМЕТНОГО СОДЕРЖАНИЯ ОБРАЗОВАНИЯ</b></a><br><font color=#00008f><i>
+Живокоренцева Т.В., Лущикова К.С.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34044918">Образование и общество</a>. 
+2014. 
+<a href="/contents.asp?id=34044918&selid=22798388">№&nbsp;5&nbsp;(88)</a>.  С. 25-30.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22798388').load("ispdf.asp?itemid=22798388&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21716539">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3936.</b></font><br><input type=checkbox name="tid21716539" id="tid21716539"  onClick='if (this.checked) {RowSelect("arw21716539",1)} else {RowSelect("arw21716539",0)}'><div id="pdf_21716539"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21716539"><b>
+НАПОЛЕОН III И ЕГО ЭПОХА В АНГЛО-АМЕРИКАНСКОЙ ИСТОРИОГРАФИИ</b></a><br><font color=#00008f><i>
+Уварова М.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33970227">Новая и новейшая история</a>. 
+2014. 
+<a href="/contents.asp?id=33970227&selid=21716539">№&nbsp;3</a>.  С. 176-191.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21716539').load("ispdf.asp?itemid=21716539&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22258802">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3937.</b></font><br><input type=checkbox name="tid22258802" id="tid22258802"  onClick='if (this.checked) {RowSelect("arw22258802",1)} else {RowSelect("arw22258802",0)}'><div id="pdf_22258802"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22258802"><b>
+“ТЫ ОТМОРОЗИШЬ СВОЮ МОРДУ В СИБИРИ”. ДИКТАТ ВЕКА. ЭРВИН ЙОРИС. ВИСБАДЕН</b></a><br><font color=#00008f><i>
+Любин В.П., Петерсен А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34028986">Новая и новейшая история</a>. 
+2014. 
+<a href="/contents.asp?id=34028986&selid=22258802">№&nbsp;5</a>.  С. 245-247.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22258802').load("ispdf.asp?itemid=22258802&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22545995">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3938.</b></font><br><input type=checkbox name="tid22545995" id="tid22545995"  onClick='if (this.checked) {RowSelect("arw22545995",1)} else {RowSelect("arw22545995",0)}'><div id="pdf_22545995"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22545995"><b>
+ОБЩЕСТВЕННАЯ ОЦЕНКА ХОДА РЕАЛИЗАЦИИ ОБРАЗОВАТЕЛЬНЫХ ПРОГРАММ: МЕТОДИКА ОЦЕНКИ И РЕЗУЛЬТАТЫ</b></a><br><font color=#00008f><i>
+Саблуков А.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34036602">Право и образование</a>. 
+2014. 
+<a href="/contents.asp?id=34036602&selid=22545995">№&nbsp;12</a>.  С. 46-64.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22545995" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22545995').load("ispdf.asp?itemid=22545995&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21533625">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3939.</b></font><br><input type=checkbox name="tid21533625" id="tid21533625"  onClick='if (this.checked) {RowSelect("arw21533625",1)} else {RowSelect("arw21533625",0)}'><div id="pdf_21533625"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21533625"><b>
+ОСНОВНЫЕ КАНАЛЫ ПОЛУЧЕНИЯ ИНФОРМАЦИИ НАСЕЛЕНИЕМ МОСКВЫ О СФЕРЕ ОБРАЗОВАНИЯ</b></a><br><font color=#00008f><i>
+Саблуков А.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33960969">Право и образование</a>. 
+2014. 
+<a href="/contents.asp?id=33960969&selid=21533625">№&nbsp;6</a>.  С. 65-76.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21533625').load("ispdf.asp?itemid=21533625&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21544438">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3940.</b></font><br><input type=checkbox name="tid21544438" id="tid21544438"  onClick='if (this.checked) {RowSelect("arw21544438",1)} else {RowSelect("arw21544438",0)}'><div id="pdf_21544438"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21544438"><b>
+"КОРЕЙСКАЯ ВОЛНА" КАК ПРОЯВЛЕНИЕ "МЯГКОЙ СИЛЫ"</b></a><br><font color=#00008f><i>
+Лачина Е.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33961435">Проблемы Дальнего Востока</a>. 
+2014. 
+<a href="/contents.asp?id=33961435&selid=21544438">№&nbsp;2</a>.  С. 147-155.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21544438" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21544438').load("ispdf.asp?itemid=21544438&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21672724">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3941.</b></font><br><input type=checkbox name="tid21672724" id="tid21672724"  onClick='if (this.checked) {RowSelect("arw21672724",1)} else {RowSelect("arw21672724",0)}'><div id="pdf_21672724"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21672724"><b>
+КРУГЛЫЙ СТОЛ "ШКОЛА А.А. БОДАЛЕВА: ТЕОРИЯ, МЕТОДОЛОГИЯ, ПРАКТИКА" (К 90-ЛЕТИЮ А. А. БОДАЛЕВА)</b></a><br><font color=#00008f><i>
+Карпова Н.Л., Пашукова Т.И.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33968205">Психологический журнал</a>. 
+2014. 
+Т. 35. <a href="/contents.asp?id=33968205&selid=21672724">№&nbsp;3</a>.  С. 134-137.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21672724').load("ispdf.asp?itemid=21672724&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22704985">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3942.</b></font><br><input type=checkbox name="tid22704985" id="tid22704985"  onClick='if (this.checked) {RowSelect("arw22704985",1)} else {RowSelect("arw22704985",0)}'><div id="pdf_22704985"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22704985"><b>
+ПРОЦЕСС ИНСТИТУЦИАЛИЗАЦИИ ВОЕННОЙ СОЦИОЛОГИИ В РОССИИ И ЕГО ОТРАЖЕНИЕ В ПУБЛИКАЦИЯХ ЖУРНАЛА “СОЦИОЛОГИЧЕСКИЕ ИССЛЕДОВАНИЯ” (ЧАСТЬ II)</b></a><br><font color=#00008f><i>
+Образцов И.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34042032">Социологические исследования</a>. 
+2014. 
+<a href="/contents.asp?id=34042032&selid=22704985">№&nbsp;11&nbsp;(367)</a>.  С. 13-20.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22704985" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22704985').load("ispdf.asp?itemid=22704985&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21948083">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3943.</b></font><br><input type=checkbox name="tid21948083" id="tid21948083"  onClick='if (this.checked) {RowSelect("arw21948083",1)} else {RowSelect("arw21948083",0)}'><div id="pdf_21948083"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21948083"><b>
+ПРОЦЕСС ИНСТИТУЦИОНАЛИЗАЦИИ ВОЕННОЙ СОЦИОЛОГИИ В РОССИИ</b></a><br><font color=#00008f><i>
+Образцов И.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33987676">Социологические исследования</a>. 
+2014. 
+<a href="/contents.asp?id=33987676&selid=21948083">№&nbsp;7&nbsp;(363)</a>.  С. 134-145.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21948083" title="Список статей, ссылающихся на данную">6</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21948083').load("ispdf.asp?itemid=21948083&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22026919">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3944.</b></font><br><input type=checkbox name="tid22026919" id="tid22026919"  onClick='if (this.checked) {RowSelect("arw22026919",1)} else {RowSelect("arw22026919",0)}'><div id="pdf_22026919"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22026919"><b>
+ОПЫТ СРАВНЕНИЯ СОЦИОЛОГИЧЕСКОГО ТЕОРЕТИЗИРОВАНИЯ В РОССИЙСКИХ И ЗАРУБЕЖНЫХ НАУЧНЫХ ЖУРНАЛАХ</b></a><br><font color=#00008f><i>
+Лисицкая Е.Ю.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33992134">Социологические исследования</a>. 
+2014. 
+<a href="/contents.asp?id=33992134&selid=22026919">№&nbsp;9&nbsp;(365)</a>.  С. 130-138.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22026919" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22026919').load("ispdf.asp?itemid=22026919&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21815221">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3945.</b></font><br><input type=checkbox name="tid21815221" id="tid21815221"  onClick='if (this.checked) {RowSelect("arw21815221",1)} else {RowSelect("arw21815221",0)}'><div id="pdf_21815221"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21815221"><b>
+УГОЛОВНАЯ ОТВЕТСТВЕННОСТЬ ЗА СКЛОНЕНИЕ К ПОТРЕБЛЕНИЮ НАРКОТИЧЕСКИХ СРЕДСТВ, ПСИХОТРОПНЫХ ВЕЩЕСТВ И ИХ АНАЛОГОВ: ПРОБЛЕМЫ КВАЛИФИКАЦИИ</b></a><br><font color=#00008f><i>
+Фирсаков С.В., Савинков А.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33975686">Адвокатская практика</a>. 
+2014. 
+<a href="/contents.asp?id=33975686&selid=21815221">№&nbsp;4</a>.  С. 38-45.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21815221" title="Список статей, ссылающихся на данную">5</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21815221').load("ispdf.asp?itemid=21815221&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22594186">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3946.</b></font><br><input type=checkbox name="tid22594186" id="tid22594186"  onClick='if (this.checked) {RowSelect("arw22594186",1)} else {RowSelect("arw22594186",0)}'><div id="pdf_22594186"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22594186"><b>
+ВТОРОЙ ФРОНТ КАК ВЕКТОР ПРОНИКНОВЕНИЯ ЗАПАДА В ЕВРАЗИЮ</b></a><br><font color=#00008f><i>
+Бартош А.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34038218">Безопасность Евразии</a>. 
+2014. 
+<a href="/contents.asp?id=34038218&selid=22594186">№&nbsp;2&nbsp;(48)</a>.  С. 238-240.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22594186').load("ispdf.asp?itemid=22594186&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23234647">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3947.</b></font><br><input type=checkbox name="tid23234647" id="tid23234647"  onClick='if (this.checked) {RowSelect("arw23234647",1)} else {RowSelect("arw23234647",0)}'><div id="pdf_23234647"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23234647"><b>
+ОЦЕНКА РИСКА БЕЗОПАСНОСТИ ДАННЫХ В ИНФОРМАЦИОННО-ТЕЛЕКОММУНИКАЦИОННЫХ СИСТЕМАХ НА ОСНОВЕ ОБЛАЧНЫХ ВЫЧИСЛЕНИЙ</b></a><br><font color=#00008f><i>
+Царегородцев А.В., Лавриненко М.М., Лапенкова Н.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34062824">Безопасность информационных технологий</a>. 
+2014. 
+Т. 21. <a href="/contents.asp?id=34062824&selid=23234647">№&nbsp;1</a>.  С. 36-40.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_23234647').load("ispdf.asp?itemid=23234647&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22758183">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3948.</b></font><br><input type=checkbox name="tid22758183" id="tid22758183"  onClick='if (this.checked) {RowSelect("arw22758183",1)} else {RowSelect("arw22758183",0)}'><div id="pdf_22758183"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22758183"><b>
+ОТРИЦАТЕЛЬНЫЙ ЯЗЫКОВОЙ МАТЕРИАЛ: ВЕКТОРЫ ИССЛЕДОВАНИЯ</b></a><br><font color=#00008f><i>
+Ефимова Н.Н.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34043449">Вестник Бурятского государственного университета</a>. 
+2014. 
+<a href="/contents.asp?id=34043449&selid=22758183">№&nbsp;10-2</a>.  С. 42-49.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22758183" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22758183').load("ispdf.asp?itemid=22758183&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21391765">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3949.</b></font><br><input type=checkbox name="tid21391765" id="tid21391765"  onClick='if (this.checked) {RowSelect("arw21391765",1)} else {RowSelect("arw21391765",0)}'><div id="pdf_21391765"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21391765"><b>
+МЕТАФОРА КАК ПЕДАГОГИЧЕСКИЙ ИНСТРУМЕНТ</b></a><br><font color=#00008f><i>
+Хахалова С.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33953059">Вестник Бурятского государственного университета</a>. 
+2014. 
+<a href="/contents.asp?id=33953059&selid=21391765">№&nbsp;1-2</a>.  С. 35-40.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21391765" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21391765').load("ispdf.asp?itemid=21391765&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22650824">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3950.</b></font><br><input type=checkbox name="tid22650824" id="tid22650824"  onClick='if (this.checked) {RowSelect("arw22650824",1)} else {RowSelect("arw22650824",0)}'><div id="pdf_22650824"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22650824"><b>
+ОПЫТ ПРОФЕССИОНАЛЬНОЙ ПОДГОТОВКИ СТУДЕНТОВ НАПРАВЛЕНИЯ "ПЕДАГОГИЧЕСКОЕ ОБРАЗОВАНИЕ"</b></a><br><font color=#00008f><i>
+Молокова О.А., Ушева Т.Ф.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34040316">Вестник Бурятского государственного университета</a>. 
+2014. 
+<a href="/contents.asp?id=34040316&selid=22650824">№&nbsp;1-3</a>.  С. 30-35.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22650824" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22650824').load("ispdf.asp?itemid=22650824&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22650829">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3951.</b></font><br><input type=checkbox name="tid22650829" id="tid22650829"  onClick='if (this.checked) {RowSelect("arw22650829",1)} else {RowSelect("arw22650829",0)}'><div id="pdf_22650829"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22650829"><b>
+ТЕКСТ КАК СРЕДСТВО ОБУЧЕНИЯ МЕЖКУЛЬТУРНОМУ ОБЩЕНИЮ В ВУЗЕ</b></a><br><font color=#00008f><i>
+Дикова Е.С.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34040316">Вестник Бурятского государственного университета</a>. 
+2014. 
+<a href="/contents.asp?id=34040316&selid=22650829">№&nbsp;1-3</a>.  С. 47-52.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22650829').load("ispdf.asp?itemid=22650829&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22869244">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3952.</b></font><br><input type=checkbox name="tid22869244" id="tid22869244"  onClick='if (this.checked) {RowSelect("arw22869244",1)} else {RowSelect("arw22869244",0)}'><div id="pdf_22869244"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22869244"><b>
+ОККАЗИОНАЛЬНАЯ ИНТЕНСИФИКАЦИЯ ЗНАЧЕНИЙ БАЗОВЫХ ЛЕКСЕМ-РЕПРЕЗЕНТАНТОВ В КОНЦЕПТЕ "DRINKING"</b></a><br><font color=#00008f><i>
+Антонова А.Б.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34047684">Вестник Воронежского государственного университета. Серия: Лингвистика и межкультурная коммуникация</a>. 
+2014. 
+<a href="/contents.asp?id=34047684&selid=22869244">№&nbsp;4</a>.  С. 48-52.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22869244').load("ispdf.asp?itemid=22869244&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22482358">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3953.</b></font><br><input type=checkbox name="tid22482358" id="tid22482358"  onClick='if (this.checked) {RowSelect("arw22482358",1)} else {RowSelect("arw22482358",0)}'><div id="pdf_22482358"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22482358"><b>
+ВЛАСТЬ ДИСКУРСА ПРИ ИНТЕРПРЕТАЦИИ СОБЫТИЙ-АТТРАКТОРОВ МЕДИЙНОГО ПРОСТРАНСТВА</b></a><br><font color=#00008f><i>
+Якоба И.А., Лесниковская Е.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34033856">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=34033856&selid=22482358">№&nbsp;10&nbsp;(93)</a>.  С. 352-357.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22482358" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22482358').load("ispdf.asp?itemid=22482358&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22594537">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3954.</b></font><br><input type=checkbox name="tid22594537" id="tid22594537"  onClick='if (this.checked) {RowSelect("arw22594537",1)} else {RowSelect("arw22594537",0)}'><div id="pdf_22594537"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22594537"><b>
+ПРАГМАТИЧЕСКИЙ ПОТЕНЦИАЛ ВНУТРЕННЕЙ ВАЛЕНТНОСТИ КЛЮЧЕВЫХ ЛЕКСЕМ, ФОРМИРУЮЩИХ СОВРЕМЕННУЮ РУССКУЮ ЭРГОНИМИЮ</b></a><br><font color=#00008f><i>
+Сизых М.М.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34038233">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=34038233&selid=22594537">№&nbsp;11&nbsp;(94)</a>.  С. 364-368.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22594537" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22594537').load("ispdf.asp?itemid=22594537&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21249478">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3955.</b></font><br><input type=checkbox name="tid21249478" id="tid21249478"  onClick='if (this.checked) {RowSelect("arw21249478",1)} else {RowSelect("arw21249478",0)}'><div id="pdf_21249478"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21249478"><b>
+МЕТАФОРИЧЕСКАЯ РЕПРЕЗЕНТАЦИЯ ЭМОЦИОНАЛЬНОГО КОНЦЕПТА PASSION (НА ПРИМЕРЕ НАТУРМОРФНОЙ И ЗООМОРФНОЙ МЕТАФОРИЧЕСКИХ МОДЕЛЕЙ)</b></a><br><font color=#00008f><i>
+Облецова Е.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33945433">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33945433&selid=21249478">№&nbsp;2&nbsp;(85)</a>.  С. 278-282.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21249478').load("ispdf.asp?itemid=21249478&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21455406">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3956.</b></font><br><input type=checkbox name="tid21455406" id="tid21455406"  onClick='if (this.checked) {RowSelect("arw21455406",1)} else {RowSelect("arw21455406",0)}'><div id="pdf_21455406"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21455406"><b>
+РОЛЬ ДОКУМЕНТОВ В УПРАВЛЕНЧЕСКОМ ПРОЦЕССЕ (МНЕНИЕ СТУДЕНТОВ, ОБУЧАЮЩИХСЯ ПО СПЕЦИАЛЬНОСТИ "МЕНЕДЖМЕНТ ОРГАНИЗАЦИИ")</b></a><br><font color=#00008f><i>
+Большедворская М.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33956317">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33956317&selid=21455406">№&nbsp;4&nbsp;(87)</a>.  С. 165-170.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21455406').load("ispdf.asp?itemid=21455406&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21676852">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3957.</b></font><br><input type=checkbox name="tid21676852" id="tid21676852"  onClick='if (this.checked) {RowSelect("arw21676852",1)} else {RowSelect("arw21676852",0)}'><div id="pdf_21676852"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21676852"><b>
+ГОТОВНОСТЬ К ФАНДРАЙЗИНГУ БУДУЩИХ МАГИСТРОВ ПЕДАГОГИЧЕСКОГО ПРОФИЛЯ КАК НОВЫЙ ЗНАЧИТЕЛЬНЫЙ КОМПОНЕНТ РЕАЛЬНОСТИ</b></a><br><font color=#00008f><i>
+Дуисеева А.Р.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33968363">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33968363&selid=21676852">№&nbsp;5&nbsp;(88)</a>.  С. 228-231.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21676852').load("ispdf.asp?itemid=21676852&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21676858">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3958.</b></font><br><input type=checkbox name="tid21676858" id="tid21676858"  onClick='if (this.checked) {RowSelect("arw21676858",1)} else {RowSelect("arw21676858",0)}'><div id="pdf_21676858"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21676858"><b>
+СОСТОЯНИЕ ПРОБЛЕМЫ ФОРМИРОВАНИЯ МЕДИАКОМПЕТЕНТНОСТИ СТУДЕНТОВ ТЕХНИЧЕСКОГО ВУЗА В ТЕОРИИ И ПРАКТИКЕ ПРОФЕССИОНАЛЬНОГО ОБРАЗОВАНИЯ</b></a><br><font color=#00008f><i>
+Молчанова Т.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33968363">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33968363&selid=21676858">№&nbsp;5&nbsp;(88)</a>.  С. 255-259.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21676858" title="Список статей, ссылающихся на данную">3</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21676858').load("ispdf.asp?itemid=21676858&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21769476">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3959.</b></font><br><input type=checkbox name="tid21769476" id="tid21769476"  onClick='if (this.checked) {RowSelect("arw21769476",1)} else {RowSelect("arw21769476",0)}'><div id="pdf_21769476"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21769476"><b>
+ОЦЕНКА АЛКОГОЛЯ В ПОСЛОВИЦАХ, ПОГОВОРКАХ, АФОРИЗМАХ И БИБЛЕЙСКИХ ИЗРЕЧЕНИЯХ (НА МАТЕРИАЛЕ АНГЛИЙСКОГО ЯЗЫКА)</b></a><br><font color=#00008f><i>
+Антонова А.Б.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33973081">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33973081&selid=21769476">№&nbsp;7&nbsp;(90)</a>.  С. 160-166.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21769476" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21769476').load("ispdf.asp?itemid=21769476&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21769477">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3960.</b></font><br><input type=checkbox name="tid21769477" id="tid21769477"  onClick='if (this.checked) {RowSelect("arw21769477",1)} else {RowSelect("arw21769477",0)}'><div id="pdf_21769477"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21769477"><b>
+СТАНОВЛЕНИЕ ЛИНГВИСТИЧЕСКОГО ТЕРМИНОВЕДЕНИЯ</b></a><br><font color=#00008f><i>
+Блем И.В., Меркурьева В.Б.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33973081">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33973081&selid=21769477">№&nbsp;7&nbsp;(90)</a>.  С. 166-170.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21769477').load("ispdf.asp?itemid=21769477&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21769485">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3961.</b></font><br><input type=checkbox name="tid21769485" id="tid21769485"  onClick='if (this.checked) {RowSelect("arw21769485",1)} else {RowSelect("arw21769485",0)}'><div id="pdf_21769485"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21769485"><b>
+ПОСТРОЕНИЕ КОММУНИКАЦИОННОЙ МОДЕЛИ С УЧЕТОМ РОЛЕВОЙ СТРУКТУРЫ КОЛЛЕКТИВА В ОСНОВЕ ОБРАЗОВАТЕЛЬНОГО МЕНЕДЖМЕНТА</b></a><br><font color=#00008f><i>
+Журавлева М.М.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33973081">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33973081&selid=21769485">№&nbsp;7&nbsp;(90)</a>.  С. 200-206.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21769485').load("ispdf.asp?itemid=21769485&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21769490">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3962.</b></font><br><input type=checkbox name="tid21769490" id="tid21769490"  onClick='if (this.checked) {RowSelect("arw21769490",1)} else {RowSelect("arw21769490",0)}'><div id="pdf_21769490"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21769490"><b>
+КОГНИТИВНО-ДИСКУРСИВНАЯ МОДЕЛЬ МЕЖПЕРСОНАЛЬНОГО ИНТЕРНЕТ-ДИСКУРСА (НА МАТЕРИАЛЕ ФРАНЦУЗСКОГО ЯЗЫКА)</b></a><br><font color=#00008f><i>
+Попова Д.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33973081">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33973081&selid=21769490">№&nbsp;7&nbsp;(90)</a>.  С. 223-227.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21769490').load("ispdf.asp?itemid=21769490&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21769494">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3963.</b></font><br><input type=checkbox name="tid21769494" id="tid21769494"  onClick='if (this.checked) {RowSelect("arw21769494",1)} else {RowSelect("arw21769494",0)}'><div id="pdf_21769494"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21769494"><b>
+ПАРАДИГМАТИЧЕСКИЕ ОСОБЕННОСТИ ПРИЛАГАТЕЛЬНЫХ КАК ОТРАЖЕНИЕ СОВРЕМЕННЫХ КОГНИТИВНЫХ ПРОЦЕССОВ</b></a><br><font color=#00008f><i>
+Рябова С.Г.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33973081">Вестник Иркутского государственного технического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33973081&selid=21769494">№&nbsp;7&nbsp;(90)</a>.  С. 241-245.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21769494').load("ispdf.asp?itemid=21769494&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw36785600">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3964.</b></font><br><input type=checkbox name="tid36785600" id="tid36785600"  onClick='if (this.checked) {RowSelect("arw36785600",1)} else {RowSelect("arw36785600",0)}'><div id="pdf_36785600"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=36785600"><b>
+СОЦИАЛИЗАЦИЯ И ИНДИВИДУАЛИЗАЦИЯ ФУНКЦИИ КОНТЕКСТА В ДИСКУРСЕ</b></a><br><font color=#00008f><i>
+Голубина К.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=36785599">Вестник Московского государственного лингвистического университета</a>. 
+2014. 
+<a href="/contents.asp?id=36785599&selid=36785600">№&nbsp;703</a>.  С. 49-60.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_36785600').load("ispdf.asp?itemid=36785600&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21422660">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3965.</b></font><br><input type=checkbox name="tid21422660" id="tid21422660"  onClick='if (this.checked) {RowSelect("arw21422660",1)} else {RowSelect("arw21422660",0)}'><div id="pdf_21422660"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21422660"><b>
+ПРИМЕНЕНИЕ ЛОГИКИ В ГРАДОСТРОИТЕЛЬСТВЕ: ТРУДНЫЙ ПУТЬ ОБРЕТЕНИЯ</b></a><br><font color=#00008f><i>
+Бирюков Б.В., Прядко И.П.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33954517">Вестник Московского университета. Серия 7: Философия</a>. 
+2014. 
+<a href="/contents.asp?id=33954517&selid=21422660">№&nbsp;2</a>.  С. 76-87.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21422660" title="Список статей, ссылающихся на данную">5</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21422660').load("ispdf.asp?itemid=21422660&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22294401">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3966.</b></font><br><input type=checkbox name="tid22294401" id="tid22294401"  onClick='if (this.checked) {RowSelect("arw22294401",1)} else {RowSelect("arw22294401",0)}'><div id="pdf_22294401"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22294401"><b>
+ПОВСЕДНЕВНАЯ ОДЕЖДА И ОБУВЬ КРЕСТЬЯНСТВА ВОСТОЧНОЙ СИБИРИ В 1920-Е ГГ. (НА ПРИМЕРЕ ИРКУТСКОЙ ОБЛАСТИ И КРАСНОЯРСКОГО КРАЯ)</b></a><br><font color=#00008f><i>
+Шаламов В.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34030360">Вестник Омского университета</a>. 
+2014. 
+<a href="/contents.asp?id=34030360&selid=22294401">№&nbsp;3&nbsp;(73)</a>.  С. 121-126.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22294401" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22294401').load("ispdf.asp?itemid=22294401&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21682111">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3967.</b></font><br><input type=checkbox name="tid21682111" id="tid21682111"  onClick='if (this.checked) {RowSelect("arw21682111",1)} else {RowSelect("arw21682111",0)}'><div id="pdf_21682111"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21682111"><b>
+ПСИХОЛОГИЧЕСКАЯ БЕЗОПАСНОСТЬ КАК ФАКТОР АДАПТАЦИИ РЕБЕНКА В ДОШКОЛЬНОМ УЧРЕЖДЕНИИ</b></a><br><font color=#00008f><i>
+Погодаева М.В., Норкина О.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33968786">Вестник Томского государственного педагогического университета</a>. 
+2014. 
+<a href="/contents.asp?id=33968786&selid=21682111">№&nbsp;6&nbsp;(147)</a>.  С. 92-96.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21682111" title="Список статей, ссылающихся на данную">4</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21682111').load("ispdf.asp?itemid=21682111&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21831790">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3968.</b></font><br><input type=checkbox name="tid21831790" id="tid21831790"  onClick='if (this.checked) {RowSelect("arw21831790",1)} else {RowSelect("arw21831790",0)}'><div id="pdf_21831790"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21831790"><b>
+ЛИНГВОКУЛЬТУРНАЯ ИНТЕРФЕРЕНЦИЯ В КОММУНИКАТИВНОМ ПОВЕДЕНИИ БИЛИНГВОВ</b></a><br><font color=#00008f><i>
+Свердлова Н.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33976956">Вестник Челябинского государственного университета</a>. 
+2014. 
+<a href="/contents.asp?id=33976956&selid=21831790">№&nbsp;3&nbsp;(332)</a>.  С. 89-94.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21831790" title="Список статей, ссылающихся на данную">8</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21831790').load("ispdf.asp?itemid=21831790&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22105879">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3969.</b></font><br><input type=checkbox name="tid22105879" id="tid22105879"  onClick='if (this.checked) {RowSelect("arw22105879",1)} else {RowSelect("arw22105879",0)}'><div id="pdf_22105879"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22105879"><b>
+СОПРОВОЖДЕНИЕ СТУДЕНТОВ НА ЭТАПЕ АДАПТАЦИИ К ОБУЧЕНИЮ В ВУЗЕ С ПОЗИЦИЙ ЛИЧНОСТНО-ЦЕНТРИРОВАННОГО ПОДХОДА КАК ПРАКТИКА ГУМАНИЗАЦИИ ОБРАЗОВАНИЯ</b></a><br><font color=#00008f><i>
+Молокова О.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34011711">Гуманизация образования</a>. 
+2014. 
+<a href="/contents.asp?id=34011711&selid=22105879">№&nbsp;5</a>.  С. 14-20.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22105879').load("ispdf.asp?itemid=22105879&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22304993">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3970.</b></font><br><input type=checkbox name="tid22304993" id="tid22304993"  onClick='if (this.checked) {RowSelect("arw22304993",1)} else {RowSelect("arw22304993",0)}'><div id="pdf_22304993"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22304993"><b>
+"БЕЛОВОРОТНИЧКОВАЯ" ПРЕСТУПНОСТЬ ЧЕРЕЗ ПРИЗМУ ФИНАНСОВО-ЭКОНОМИЧЕСКОГО КРИЗИСА В США</b></a><br><font color=#00008f><i>
+Карпович О.Г., Шулепов Н.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34030669">Закон и право</a>. 
+2014. 
+<a href="/contents.asp?id=34030669&selid=22304993">№&nbsp;10</a>.  С. 23-31.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22304993').load("ispdf.asp?itemid=22304993&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22774858">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3971.</b></font><br><input type=checkbox name="tid22774858" id="tid22774858"  onClick='if (this.checked) {RowSelect("arw22774858",1)} else {RowSelect("arw22774858",0)}'><div id="pdf_22774858"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22774858"><b>
+О РОЛИ ЯЗЫКОВОЙ ЛИЧНОСТИ В РЕЧЕВОМ АКТЕ: ЯЗЫКОВАЯ ЛИЧНОСТЬ ПРЕДУПРЕЖДАЮЩЕГО</b></a><br><font color=#00008f><i>
+Скулимовская Д.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34044014">Известия Алтайского государственного университета</a>. 
+2014. 
+<a href="/contents.asp?id=34044014&selid=22774858">№&nbsp;2-2&nbsp;(82)</a>.  С. 197-201.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22774858" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22774858').load("ispdf.asp?itemid=22774858&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22954744">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3972.</b></font><br><input type=checkbox name="tid22954744" id="tid22954744"  onClick='if (this.checked) {RowSelect("arw22954744",1)} else {RowSelect("arw22954744",0)}'><div id="pdf_22954744"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22954744"><b>
+ПРОБЛЕМА СОЦИАЛЬНО-БЫТОВЫХ УСЛОВИЙ СОДЕРЖАНИЯ АВСТРО-ВЕНГЕРСКИХ ВОЕННОПЛЕННЫХ НА ТЕРРИТОРИИ ВОСТОЧНОЙ СИБИРИ ВО ВРЕМЯ ПЕРВОЙ МИРОВОЙ ВОЙНЫ</b></a><br><font color=#00008f><i>
+Федорова Т.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34051640">Известия Алтайского государственного университета</a>. 
+2014. 
+<a href="/contents.asp?id=34051640&selid=22954744">№&nbsp;4-2&nbsp;(84)</a>.  С. 232-236.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22954744').load("ispdf.asp?itemid=22954744&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21426202">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3973.</b></font><br><input type=checkbox name="tid21426202" id="tid21426202"  onClick='if (this.checked) {RowSelect("arw21426202",1)} else {RowSelect("arw21426202",0)}'><div id="pdf_21426202"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21426202"><b>
+СТАТИСТИЧЕСКАЯ ОЦЕНКА ДОСТУПНОСТИ ВЫСШЕГО ОБРАЗОВАНИЯ</b></a><br><font color=#00008f><i>
+Кондрацкая Т.А., Унжакова Е.П.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33954715">Известия Иркутской государственной экономической академии</a>. 
+2014. 
+<a href="/contents.asp?id=33954715&selid=21426202">№&nbsp;2</a>.  С. 126-133.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21426202" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21426202').load("ispdf.asp?itemid=21426202&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21426210">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3974.</b></font><br><input type=checkbox name="tid21426210" id="tid21426210"  onClick='if (this.checked) {RowSelect("arw21426210",1)} else {RowSelect("arw21426210",0)}'><div id="pdf_21426210"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21426210"><b>
+ЯЗЫКОВАЯ ЛИЧНОСТЬ БАРАКА ОБАМЫ: ВЗЛЕТ ПОЛИТИЧЕСКОЙ КАРЬЕРЫ</b></a><br><font color=#00008f><i>
+Липко Ю.Г., Антипьева И.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33954715">Известия Иркутской государственной экономической академии</a>. 
+2014. 
+<a href="/contents.asp?id=33954715&selid=21426210">№&nbsp;2</a>.  С. 186-191.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21426210" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21426210').load("ispdf.asp?itemid=21426210&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22450719">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3975.</b></font><br><input type=checkbox name="tid22450719" id="tid22450719"  onClick='if (this.checked) {RowSelect("arw22450719",1)} else {RowSelect("arw22450719",0)}'><div id="pdf_22450719"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22450719"><b>
+СТАРИННОЕ (АНТИКВАРНОЕ) ОРУЖИЕ В РОССИИ: ЗАКОН И ПРАВОПРИМЕНИТЕЛЬНАЯ ПРАКТИКА</b></a><br><font color=#00008f><i>
+Шелковникова Е.Д.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34032541">История государства и права</a>. 
+2014. 
+<a href="/contents.asp?id=34032541&selid=22450719">№&nbsp;19</a>.  С. 59-64.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22450719" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22450719').load("ispdf.asp?itemid=22450719&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21275728">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3976.</b></font><br><input type=checkbox name="tid21275728" id="tid21275728"  onClick='if (this.checked) {RowSelect("arw21275728",1)} else {RowSelect("arw21275728",0)}'><div id="pdf_21275728"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21275728"><b>
+СТАРИННОЕ ОРУЖИЕ В РОССИИ И ЕГО ПРАВОВОЙ СТАТУС: ВЗГЛЯД В ПРОШЛОЕ</b></a><br><font color=#00008f><i>
+Шелковникова Е.Д.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33946841">История государства и права</a>. 
+2014. 
+<a href="/contents.asp?id=33946841&selid=21275728">№&nbsp;4</a>.  С. 22-27.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21275728" title="Список статей, ссылающихся на данную">5</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21275728').load("ispdf.asp?itemid=21275728&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22625936">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3977.</b></font><br><input type=checkbox name="tid22625936" id="tid22625936"  onClick='if (this.checked) {RowSelect("arw22625936",1)} else {RowSelect("arw22625936",0)}'><div id="pdf_22625936"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22625936"><b>
+НАЦИОНАЛЬНЫЙ МЕНТАЛИТЕТ РУССКИХ И НЕМЦЕВ (СРАВНИТЕЛЬНЫЙ АНАЛИЗ НА ПРИМЕРЕ СТУДЕНЧЕСКОЙ МОЛОДЕЖИ МОСКВЫ И БЕРЛИНА)</b></a><br><font color=#00008f><i>
+Гришенкова Е.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34039484">Мониторинг общественного мнения: экономические и социальные перемены</a>. 
+2014. 
+<a href="/contents.asp?id=34039484&selid=22625936">№&nbsp;5&nbsp;(123)</a>.  С. 85-97.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22625936" title="Список статей, ссылающихся на данную">6</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22625936').load("ispdf.asp?itemid=22625936&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21352572">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3978.</b></font><br><input type=checkbox name="tid21352572" id="tid21352572"  onClick='if (this.checked) {RowSelect("arw21352572",1)} else {RowSelect("arw21352572",0)}'><div id="pdf_21352572"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21352572"><b>
+ВЗАИМОСВЯЗЬ ЭМОЦИОНАЛЬНЫХ И КОГНИТИВНЫХ НАРУШЕНИЙ В СТРУКТУРЕ НАРКОЛОГИЧЕСКИХ ЗАБОЛЕВАНИЙ</b></a><br><font color=#00008f><i>
+Агибалова Т.В., Рычкова О.В., Гуревич Г.Л., Потапова Р.К.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33950557">Наркология</a>. 
+2014. 
+Т. 13. <a href="/contents.asp?id=33950557&selid=21352572">№&nbsp;1&nbsp;(145)</a>.  С. 84-90.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21352572" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21352572').load("ispdf.asp?itemid=21352572&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21139287">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3979.</b></font><br><input type=checkbox name="tid21139287" id="tid21139287"  onClick='if (this.checked) {RowSelect("arw21139287",1)} else {RowSelect("arw21139287",0)}'><div id="pdf_21139287"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21139287"><b>
+ОПРЕДЕЛЕНИЕ СУПРУЖЕСКОЙ ДОЛИ В ИМУЩЕСТВЕ</b></a><br><font color=#00008f><i>
+Зимина И.А., Давыдов Ф.Ф.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33938896">Нотариус</a>. 
+2014. 
+<a href="/contents.asp?id=33938896&selid=21139287">№&nbsp;1</a>.  С. 23-25.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21139287" title="Список статей, ссылающихся на данную">5</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21139287').load("ispdf.asp?itemid=21139287&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22993707">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3980.</b></font><br><input type=checkbox name="tid22993707" id="tid22993707"  onClick='if (this.checked) {RowSelect("arw22993707",1)} else {RowSelect("arw22993707",0)}'><div id="pdf_22993707"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22993707"><b>
+ПОДГОТОВКА СТУДЕНТОВ НАПРАВЛЕНИЯ "ПЕДАГОГИЧЕСКОЕ ОБРАЗОВАНИЕ" К СОПРОВОЖДЕНИЮ СОЦИАЛИЗАЦИИ ОБУЧАЮЩИХСЯ НА РАЗНЫХ СТУПЕНЯХ ОБРАЗОВАНИЯ</b></a><br><font color=#00008f><i>
+Молокова О.А., Погодаева М.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34053407">Преподаватель XXI век</a>. 
+2014. 
+<a href="/contents.asp?id=34053407&selid=22993707">№&nbsp;3-1</a>.  С. 133-143.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22993707" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22993707').load("ispdf.asp?itemid=22993707&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22260841">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3981.</b></font><br><input type=checkbox name="tid22260841" id="tid22260841"  onClick='if (this.checked) {RowSelect("arw22260841",1)} else {RowSelect("arw22260841",0)}'><div id="pdf_22260841"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22260841"><b>
+КРИМИНОЛОГИЧЕСКИЕ ОСОБЕННОСТИ КРАЖ, СОВЕРШЕННЫХ С НЕЗАКОННЫМ ПРОНИКНОВЕНИЕМ В ЖИЛИЩЕ В УСЛОВИЯХ МЕГАПОЛИСА</b></a><br><font color=#00008f><i>
+Терентьева Н.Н.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34029093">Российский следователь</a>. 
+2014. 
+<a href="/contents.asp?id=34029093&selid=22260841">№&nbsp;18</a>.  С. 44-48.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22260841').load("ispdf.asp?itemid=22260841&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21376934">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3982.</b></font><br><input type=checkbox name="tid21376934" id="tid21376934"  onClick='if (this.checked) {RowSelect("arw21376934",1)} else {RowSelect("arw21376934",0)}'><div id="pdf_21376934"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21376934"><b>
+ТЕНДЕНЦИИ РАЗВИТИЯ И ОСОБЕННОСТИ СОВЕРШЕНИЯ ХИЩЕНИЯ АВТОТРАНСПОРТНЫХ СРЕДСТВ</b></a><br><font color=#00008f><i>
+Адамян Р.Э.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33952036">Российский следователь</a>. 
+2014. 
+<a href="/contents.asp?id=33952036&selid=21376934">№&nbsp;6</a>.  С. 25-29.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21376934').load("ispdf.asp?itemid=21376934&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22413927">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3983.</b></font><br><input type=checkbox name="tid22413927" id="tid22413927"  onClick='if (this.checked) {RowSelect("arw22413927",1)} else {RowSelect("arw22413927",0)}'><div id="pdf_22413927"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22413927"><b>
+"ИЗ ПЛАМЯ И СВЕТА... " (АНАЛИЗ СТИХОТВОРЕНИЯ М. Ю. ЛЕРМОНТОВА "ЕСТЬ РЕЧИ - ЗНАЧЕНЬЕ...")</b></a><br><font color=#00008f><i>
+Гулова И.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34031795">Русский язык в школе</a>. 
+2014. 
+<a href="/contents.asp?id=34031795&selid=22413927">№&nbsp;10</a>.  С. 33-38.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22413927').load("ispdf.asp?itemid=22413927&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22831795">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3984.</b></font><br><input type=checkbox name="tid22831795" id="tid22831795"  onClick='if (this.checked) {RowSelect("arw22831795",1)} else {RowSelect("arw22831795",0)}'><div id="pdf_22831795"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22831795"><b>
+КЛАССИЧЕСКИЙ И ПРОТОТИПИЧЕСКИЙ ПОДХОДЫ К ИССЛЕДОВАНИЮ ПОВЕДЕНЧЕСКОЙ СИТУАЦИИ</b></a><br><font color=#00008f><i>
+Топка Л.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34046166">Русский язык за рубежом</a>. 
+2014. 
+<a href="/contents.asp?id=34046166&selid=22831795">№&nbsp;6&nbsp;(247)</a>.  С. 85-90.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22831795" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22831795').load("ispdf.asp?itemid=22831795&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22138588">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3985.</b></font><br><input type=checkbox name="tid22138588" id="tid22138588"  onClick='if (this.checked) {RowSelect("arw22138588",1)} else {RowSelect("arw22138588",0)}'><div id="pdf_22138588"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22138588"><b>
+ПЛЮРАЛИЗМ: ПРОБЛЕМЫ СТАРЫЕ И НОВЫЕ</b></a><br><font color=#00008f><i>
+Васильев В.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34016476">Социально-гуманитарные знания</a>. 
+2014. 
+<a href="/contents.asp?id=34016476&selid=22138588">№&nbsp;5</a>.  С. 106-118.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22138588" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22138588').load("ispdf.asp?itemid=22138588&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21561778">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3986.</b></font><br><input type=checkbox name="tid21561778" id="tid21561778"  onClick='if (this.checked) {RowSelect("arw21561778",1)} else {RowSelect("arw21561778",0)}'><div id="pdf_21561778"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21561778"><b>
+ИННОВАЦИОННОЕ МЫШЛЕНИЕ И ОСНОВЫ МЕХАНИЗМА УПРАВЛЕНИЯ ТВОРЧЕСКИМ ПОТЕНЦИАЛОМ СОВРЕМЕННОЙ КОРПОРАЦИИ</b></a><br><font color=#00008f><i>
+Салихов Б.В., Антипова Д.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33962105">Транспортное дело России</a>. 
+2014. 
+<a href="/contents.asp?id=33962105&selid=21561778">№&nbsp;1</a>.  С. 205-209.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21561778" title="Список статей, ссылающихся на данную">4</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21561778').load("ispdf.asp?itemid=21561778&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21289916">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3987.</b></font><br><input type=checkbox name="tid21289916" id="tid21289916"  onClick='if (this.checked) {RowSelect("arw21289916",1)} else {RowSelect("arw21289916",0)}'><div id="pdf_21289916"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21289916"><b>
+КРИМИНОЛОГИЯ В СОВРЕМЕННОМ МИРЕ (РЕЦЕНЗИЯ НА УЧЕБНИК О.В. СТАРКОВА "КРИМИНОЛОГИЯ")</b></a><br><font color=#00008f><i>
+Иншаков С.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33947435">Уголовное право</a>. 
+2014. 
+<a href="/contents.asp?id=33947435&selid=21289916">№&nbsp;1</a>.  С. 137-138.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21289916').load("ispdf.asp?itemid=21289916&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22029325">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3988.</b></font><br><input type=checkbox name="tid22029325" id="tid22029325"  onClick='if (this.checked) {RowSelect("arw22029325",1)} else {RowSelect("arw22029325",0)}'><div id="pdf_22029325"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22029325"><b>
+УРОВЕНЬ И КАЧЕСТВО ЖИЗНИ В КАНАДЕ: ЯЗЫКОВЫЕ И СОЦИАЛЬНЫЕ АСПЕКТЫ</b></a><br><font color=#00008f><i>
+Радченко О.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33992240">Уровень жизни населения регионов России</a>. 
+2014. 
+<a href="/contents.asp?id=33992240&selid=22029325">№&nbsp;3&nbsp;(193)</a>.  С. 108-114.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22029325').load("ispdf.asp?itemid=22029325&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21184951">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3989.</b></font><br><input type=checkbox name="tid21184951" id="tid21184951"  onClick='if (this.checked) {RowSelect("arw21184951",1)} else {RowSelect("arw21184951",0)}'><div id="pdf_21184951"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21184951"><b>
+СПОРНЫЕ ВОПРОСЫ ДЕТСКОГО ДОСУГОВОГО ЧТЕНИЯ. МАССОВАЯ ЛИТЕРАТУРА И КНИЖНЫЕ ИНТЕРНЕТ-ПРОЕКТЫ В КРУГЕ ДЕТСКОГО ЧТЕНИЯ</b></a><br><font color=#00008f><i>
+Кутейникова Н.Е., Чудинова В.П.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33941373">Литература в школе</a>. 
+2014. 
+<a href="/contents.asp?id=33941373&selid=21184951">№&nbsp;3</a>.  С. 35-38.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=21184951" title="Список статей, ссылающихся на данную">4</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_21184951').load("ispdf.asp?itemid=21184951&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22873230">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3990.</b></font><br><input type=checkbox name="tid22873230" id="tid22873230"  onClick='if (this.checked) {RowSelect("arw22873230",1)} else {RowSelect("arw22873230",0)}'><div id="pdf_22873230"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22873230"><b>
+ГЕОПОЛИТИЧЕСКИЕ ВЫЗОВЫ И УГРОЗЫ СОВРЕМЕННОЙ РОССИИ НА ПОСТСОВЕТСКОМ ПРОСТРАНСТВЕ</b></a><br><font color=#00008f><i>
+Синчук Ю.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34047814">Постсоветский материк</a>. 
+2014. 
+<a href="/contents.asp?id=34047814&selid=22873230">№&nbsp;1&nbsp;(1)</a>.  С. 69-77.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22873230" title="Список статей, ссылающихся на данную">19</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22873230').load("ispdf.asp?itemid=22873230&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23833038">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3991.</b></font><br><input type=checkbox name="tid23833038" id="tid23833038"  onClick='if (this.checked) {RowSelect("arw23833038",1)} else {RowSelect("arw23833038",0)}'><div id="pdf_23833038"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23833038"><b>
+ПАНТЮРКИЗМ КАК УГРОЗА НАЦИОНАЛЬНОЙ БЕЗОПАСНОСТИ РОССИЙСКОЙ ИМПЕРИИ В НАЧАЛЕ XX ВЕКА</b></a><br><font color=#00008f><i>
+Силантьев Р.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34085135">Вестник академии военных наук</a>. 
+2014. 
+<a href="/contents.asp?id=34085135&selid=23833038">№&nbsp;1&nbsp;(46)</a>.  С. 177-179.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=23833038" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_23833038').load("ispdf.asp?itemid=23833038&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23833018">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3992.</b></font><br><input type=checkbox name="tid23833018" id="tid23833018"  onClick='if (this.checked) {RowSelect("arw23833018",1)} else {RowSelect("arw23833018",0)}'><div id="pdf_23833018"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23833018"><b>
+МОДЕЛЬ УПРАВЛЯЕМОГО ХАОСА В СФЕРЕ ВОЕННОЙ БЕЗОПАСНОСТИ</b></a><br><font color=#00008f><i>
+Бартош А.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34085135">Вестник академии военных наук</a>. 
+2014. 
+<a href="/contents.asp?id=34085135&selid=23833018">№&nbsp;1&nbsp;(46)</a>.  С. 69-77.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=23833018" title="Список статей, ссылающихся на данную">2</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_23833018').load("ispdf.asp?itemid=23833018&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23917548">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3993.</b></font><br><input type=checkbox name="tid23917548" id="tid23917548"  onClick='if (this.checked) {RowSelect("arw23917548",1)} else {RowSelect("arw23917548",0)}'><div id="pdf_23917548"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23917548"><b>
+СТРАТЕГИЯ НАТО В ТУРБУЛЕНТНОМ МИРЕ: СТАВКА НА СИЛУ</b></a><br><font color=#00008f><i>
+Бартош А.А.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34088377">Вестник академии военных наук</a>. 
+2014. 
+<a href="/contents.asp?id=34088377&selid=23917548">№&nbsp;3&nbsp;(48)</a>.  С. 19-26.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=23917548" title="Список статей, ссылающихся на данную">1</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_23917548').load("ispdf.asp?itemid=23917548&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw23917576">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3994.</b></font><br><input type=checkbox name="tid23917576" id="tid23917576"  onClick='if (this.checked) {RowSelect("arw23917576",1)} else {RowSelect("arw23917576",0)}'><div id="pdf_23917576"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=23917576"><b>
+ИНТЕГРАЦИЯ ПОСТСОВЕТСКОГО ПРОСТРАНСТВА КАК ПРИОРИТЕТ ГЕОПОЛИТИКИ РОССИИ</b></a><br><font color=#00008f><i>
+Владыцкий А.С.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34088378">Вестник академии военных наук</a>. 
+2014. 
+<a href="/contents.asp?id=34088378&selid=23917576">№&nbsp;4&nbsp;(49)</a>.  С. 15-18.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_23917576').load("ispdf.asp?itemid=23917576&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22500324">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3995.</b></font><br><input type=checkbox name="tid22500324" id="tid22500324"  onClick='if (this.checked) {RowSelect("arw22500324",1)} else {RowSelect("arw22500324",0)}'><div id="pdf_22500324"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22500324"><b>
+АКТУАЛИЗАЦИЯ НЕЯВНЫХ ЗНАНИЙ КАК ОНТОЛОГИИ ЭКОНОМИЧЕСКИХ ИННОВАЦИЙ</b></a><br><font color=#00008f><i>
+Салихов Б.В., Салихова И.С.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34034766">Вестник Московского государственного областного университета</a>. 
+2014. 
+<a href="/contents.asp?id=34034766&selid=22500324">№&nbsp;3</a>.  С. 18.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22500324').load("ispdf.asp?itemid=22500324&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22133370">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3996.</b></font><br><input type=checkbox name="tid22133370" id="tid22133370"  onClick='if (this.checked) {RowSelect("arw22133370",1)} else {RowSelect("arw22133370",0)}'><div id="pdf_22133370"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22133370"><b>
+ПОРТРЕТИРОВАНИЕ СЛОВ И ВЫРАЖЕНИЙ КАК АЛЬТЕРНАТИВНЫЙ ПРИЕМ ПРЕДСТАВЛЕНИЯ ЛЕКЦИОННОГО МАТЕРИАЛА В КУРСЕ ЛЕКСИКОЛОГИИ</b></a><br><font color=#00008f><i>
+Кульгавова Л.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34016072">Известия Волгоградского государственного педагогического университета</a>. 
+2014. 
+<a href="/contents.asp?id=34016072&selid=22133370">№&nbsp;4&nbsp;(89)</a>.  С. 198-203.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22133370').load("ispdf.asp?itemid=22133370&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22133383">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3997.</b></font><br><input type=checkbox name="tid22133383" id="tid22133383"  onClick='if (this.checked) {RowSelect("arw22133383",1)} else {RowSelect("arw22133383",0)}'><div id="pdf_22133383"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22133383"><b>
+ДИСКУРСИВНОЕ КОНСТРУИРОВАНИЕ КАК ТЕОРЕТИЧЕСКОЕ ПОНЯТИЕ</b></a><br><font color=#00008f><i>
+Плотникова С.Н.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34016073">Известия Волгоградского государственного педагогического университета</a>. 
+2014. 
+<a href="/contents.asp?id=34016073&selid=22133383">№&nbsp;5&nbsp;(90)</a>.  С. 41-46.
+</td><td align=center valign=middle class="select-tr-right">
+<a href="cit_items.asp?gritemid=22133383" title="Список статей, ссылающихся на данную">15</a>
+</td></tr>
+<script type="text/javascript">
+$('#pdf_22133383').load("ispdf.asp?itemid=22133383&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw21995103">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3998.</b></font><br><input type=checkbox name="tid21995103" id="tid21995103"  onClick='if (this.checked) {RowSelect("arw21995103",1)} else {RowSelect("arw21995103",0)}'><div id="pdf_21995103"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=21995103"><b>
+ОСОБЕННОСТИ ПОДГОТОВКИ ОФИЦЕРОВ ПЕХОТНЫХ ЧАСТЕЙ РЕЙХСВЕРА В 20"Е ГГ. XX В..</b></a><br><font color=#00008f><i>
+Манохин И.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=33990431">Мир образования - образование в мире</a>. 
+2014. 
+<a href="/contents.asp?id=33990431&selid=21995103">№&nbsp;3&nbsp;(55)</a>.  С. 23-28.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_21995103').load("ispdf.asp?itemid=21995103&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22924412">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>3999.</b></font><br><input type=checkbox name="tid22924412" id="tid22924412"  onClick='if (this.checked) {RowSelect("arw22924412",1)} else {RowSelect("arw22924412",0)}'><div id="pdf_22924412"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22924412"><b>
+О СОЗДАНИИ ГЛАВНОГО УПРАВЛЕНИЯ ВОЕННО-УЧЕБНЫХ ЗАВЕДЕНИЙ В 1917-1921 ГГ</b></a><br><font color=#00008f><i>
+Манохин И.В.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34050060">Мир образования - образование в мире</a>. 
+2014. 
+<a href="/contents.asp?id=34050060&selid=22924412">№&nbsp;4&nbsp;(56)</a>.  С. 28-32.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22924412').load("ispdf.asp?itemid=22924412&rand=" + Math.random())
+</script>
+
+
+
+<tr valign=middle id="arw22084051">
+<td align=center valign=top class="select-tr-left"><font color=#00008f><b>4000.</b></font><br><input type=checkbox name="tid22084051" id="tid22084051"  onClick='if (this.checked) {RowSelect("arw22084051",1)} else {RowSelect("arw22084051",0)}'><div id="pdf_22084051"></div></td>
+<td align=left valign=top>
+<a href="/item.asp?id=22084051"><b>
+ОТРАЖЕНИЕ ВАРИАНТНЫХ ФОРМ КРЫЛАТЫХ ВЫРАЖЕНИЙ-ГАЛЛИЦИЗМОВ В НАЦИОНАЛЬНОМ КОРПУСЕ РУССКОГО ЯЗЫКА: ТРУДНОСТИ ПОИСКА</b></a><br><font color=#00008f><i>
+Макарова А.С.</i></font><br>
+<font color=#00008f>
+
+
+<a href="/contents.asp?id=34007439">Проблемы истории, филологии, культуры</a>. 
+2014. 
+<a href="/contents.asp?id=34007439&selid=22084051">№&nbsp;3&nbsp;(45)</a>.  С. 54-55.
+</td><td align=center valign=middle class="select-tr-right">
+0</td></tr>
+<script type="text/javascript">
+$('#pdf_22084051').load("ispdf.asp?itemid=22084051&rand=" + Math.random())
+</script>
+
+
+</table>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+document.getElementById('totalcited').innerHTML=16533;
+</SCRIPT>
+
+
+<div style="width:578px; height:24px; border:#7f9db9 1px solid;padding:0;margin:20px 0 0 0; text-align:left; border-radius: 12px;" id="pages">
+<table width=578 height=24 cellspacing=1 cellpadding=3 border=0>
+<tr align=center valign=middle class="menurb">
+<td width=15% nowrap><a href="javascript:goto_page(1)">В&nbsp;начало</a></td>
+<td width=10% class="mouse-hovergr" nowrap><a title="Предыдущая страница" href="javascript:goto_page(39)">&lt;&lt;</a></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#f5f5f5 nowrap><a href="javascript:goto_page(35)">35</a></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#f5f5f5 nowrap><a href="javascript:goto_page(36)">36</a></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#f5f5f5 nowrap><a href="javascript:goto_page(37)">37</a></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#f5f5f5 nowrap><a href="javascript:goto_page(38)">38</a></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#f5f5f5 nowrap><a href="javascript:goto_page(39)">39</a></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#e8e8e8 nowrap><font color=#F26C4F>40</font></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#f5f5f5 nowrap><a href="javascript:goto_page(41)">41</a></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#f5f5f5 nowrap><a href="javascript:goto_page(42)">42</a></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#f5f5f5 nowrap><a href="javascript:goto_page(43)">43</a></td>
+
+<td width=5% class="mouse-hovergr" bgcolor=#f5f5f5 nowrap><a href="javascript:goto_page(44)">44</a></td>
+
+<td width=10% class="mouse-hovergr" nowrap><a title="Следующая страница" href="javascript:goto_page(41)">&gt;&gt;</a></td>
+<td width=15% nowrap><a href="javascript:goto_page(95)">В&nbsp;конец</a></td>
+</tr>
+</table>
+</div>
+
+<br>
+</td></tr></table>
+
+</td>
+<td align=right valign=top>
+
+<div id="panel_default" style="position: relative; width: 200px; height:0; margin: 0; border: 1px; padding: 0"></div>
+<div id="panel" style="position: relative; width: 200px; margin: 0; border: 0; padding: 0">
+
+<div style="width: 190px;" class="right-panel">
+
+<table width=190 cellspacing=0 cellpadding=3 border=0>
+
+<tr><td colspan=2 align=center valign=top><font color=#F26C4F><b>ИНСТРУМЕНТЫ</b></font><br><img src="/pic/1pix.gif" vspace=1><br></td></tr>
+
+
+<tr><td width=15% align=right valign=top>
+<a href="javascript:goto_page(41)"><img src="images/but_orange.gif" width=15 height=15 hspace=3 border=0></a></td>
+<td width=85% align=left valign=middle><a href="javascript:goto_page(41)">Следующая страница</a>
+</td></tr>
+
+<tr><td width=15% align=right valign=top>
+<a href="javascript:goto_page(39)"><img src="images/but_orange.gif" width=15 height=15 hspace=3 border=0></a></td>
+<td width=85% align=left valign=middle><a href="javascript:goto_page(39)">Предыдущая страница</a>
+</td></tr>
+<tr><td colspan=2><img src="/pic/1pix.gif" vspace=5><br></td></tr>
+
+<tr><td width=15% align=right valign=top>
+<a href="javascript:select_all()"><img src="images/but_orange.gif" width=15 height=15 hspace=3 border=0></a></td>
+<td width=85% align=left valign=middle><a href="javascript:select_all()">Выделить все публикации на этой странице</a>
+</td></tr>
+<tr><td width=15% align=right valign=top>
+<a href="javascript:deselect_all()"><img src="images/but_orange.gif" width=15 height=15 hspace=3 border=0></a></td>
+<td width=85% align=left valign=middle><a href="javascript:deselect_all()">Снять выделение</a>
+</td></tr>
+
+<tr><td colspan=2><img src="/pic/1pix.gif" vspace=5><br></td></tr>
+<tr><td width=15% align=right valign=top>
+<a href="javascript:itembox_add()"><img src="images/but_orange.gif" width=15 height=15 hspace=3 border=0></a></td>
+<td width=85% align=left valign=middle><a href="javascript:itembox_add()">Добавить выделенные публикации в подборку:</a></td></tr>
+
+<tr><td colspan=2 align=center><div class="formfr"><select name="itemboxid" style="width:180px" class="input">
+
+<option value="0" selected>Новая подборка
+</select></div>&nbsp;</td></tr>
+
+<tr><td width=15% align=right valign=top>
+<a href="javascript:itembox_add_all()"><img src="images/but_orange.gif" width=15 height=15 hspace=3 border=0></a></td>
+<td width=85% align=left valign=middle><a href="javascript:itembox_add_all()">Добавить все публикации организации в указанную выше подборку</a></td></tr>
+
+<tr><td colspan=2><img src="/pic/1pix.gif" vspace=5><br></td></tr>
+<tr><td width=15% align=right valign=top>
+<a href="cit_org_items.asp?orgsid=2179&orgdepid=0"><img src="images/but_orange.gif" width=15 height=15 hspace=3 border=0></a></td>
+<td width=85% align=left valign=middle><a href="cit_org_items.asp?orgsid=2179&orgdepid=0">Вывести список публикаций, ссылающихся на публикации организации</a>
+</td></tr>
+
+<tr><td width=15% align=right valign=top>
+<a href="org_profile.asp?id=2179"><img src="/pic/stat.gif" width=12 height=13 hspace=4 border=0></a></td>
+<td width=85% align=left valign=middle><a href="org_profile.asp?id=2179">Анализ публикационной активности организации</a>
+</td></tr>
+
+
+
+</table>
+</div>
+
+</div>
+
+</td></tr></table>
+</td></tr></table>
+</FORM>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+$(function() {
+$(".help").tooltip({
+	position: "top right",
+	offset: [-15, -100],
+	effect: "fade", 
+	fadeInSpeed: 400, 
+	fadeOutSpeed: 400, 
+	delay: 400,  
+	predelay: 400,
+	opacity: 1.0
+});
+});
+</script>
+
+
+<br><br>
+<table width=970 height=40 border=0 cellpadding=0 cellspacing=0 id="footer">
+<tr align=center valign=middle class="menug">
+<td width=15% valign="bottom">
+
+</td>
+<td width=70%><font color=#00008f><span style="position: relative; top: 3px; right: 15px; color: #F26C4F;">*</span><a href="/copyright.asp">&copy; 2000-2019 ООО НАУЧНАЯ ЭЛЕКТРОННАЯ БИБЛИОТЕКА. Все права защищены</a></font><span style="position: relative; top: 3px; left: 15px; color: #F26C4F;">*</span></td>
+<td width=15% valign="bottom">
+
+</td>
+</tr></table>
+
+<!-- Yandex.Metrika -->
+<div style="display:none;"><script type="text/javascript">
+(function(w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter171463 = new Ya.Metrika(171463);
+        } catch(e) {}
+    });
+})(window, 'yandex_metrika_callbacks');
+</script></div>
+<script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script>
+<noscript><div style="position:absolute"><img src="//mc.yandex.ru/watch/171463" alt="" /></div></noscript>
+<!-- /Yandex.Metrika -->
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-9339902-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+</script>
+
+
+<br><br><br>
+</td></tr></table>
+</html>
